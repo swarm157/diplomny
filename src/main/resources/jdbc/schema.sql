@@ -1,4 +1,4 @@
-CREATE TABLE User (
+CREATE TABLE _User (
     userID int,
     name varchar(255),
     lastName varchar(255),
@@ -7,14 +7,14 @@ CREATE TABLE User (
     email varchar(255),
     password varchar(255),
     description text(5000),
-    avatar blob,
+    avatar blob
 );
 
 CREATE TABLE Test (
     testID int,
     name varchar(255),
     description text(5000),
-    previousID int,
+    previousID int
 );
 
 CREATE TABLE TestQuestion (
@@ -25,20 +25,20 @@ CREATE TABLE TestQuestion (
     showAnswersPerInstance int,
     timeForAnsweringInSec int,
     taken date,
-    answered date,
+    answered date
 );
 
 CREATE TABLE TestAnswer (
     testAnswer int,
     testID int,
-    answer varchar(255),
+    answer varchar(255)
 );
 
 CREATE TABLE TestAnswerReward (
     testAnswerRewardID int,
     testAnswerID int,
     parameterID int,
-    value int,
+    reward int
 );
 
 CREATE TABLE TestParameter (
@@ -46,7 +46,7 @@ CREATE TABLE TestParameter (
     testID int,
     name varchar(255),
     required int,
-    previousRequired int,
+    previousRequired int
 );
 
 CREATE TABLE TestUser (
@@ -54,7 +54,7 @@ CREATE TABLE TestUser (
     userID int,
     testID int,
     answers varchar(255),
-    passed bit,
+    passed bit
 );
 
 CREATE TABLE TestInstanceRedirection (
@@ -62,7 +62,7 @@ CREATE TABLE TestInstanceRedirection (
     userID int,
     testID int,
     testAnswerID int,
-    redirectedToNumber int,
+    redirectedToNumber int
 );
 
 

@@ -1,6 +1,7 @@
 package ru.nightmare.diplomny.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import java.sql.Date;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.Objects;
 @EqualsAndHashCode
 @ToString
 public class User {
+    @Id
     private int userId;
     private String name;
     private String lastName;

@@ -1,6 +1,7 @@
 package ru.nightmare.diplomny.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import java.sql.Date;
 
@@ -11,6 +12,7 @@ import java.sql.Date;
 @EqualsAndHashCode
 @ToString
 public class TestQuestion {
+    @Id
     private int testQuestionId;
     private int numberInOrder;
     private int testId;

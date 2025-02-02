@@ -56,8 +56,19 @@ CREATE TABLE TestUser (
     testUserID int,
     userID int,
     testID int,
-    answers varchar(255),
     passed bit
+);
+
+CREATE TABLE TestResult (
+    testResultID int,
+    testParameterID int,
+    summary int
+);
+
+CREATE TABLE TestUserAnswer(
+    testUserAnswerID int,
+    testUserID int,
+    answer int
 );
 
 CREATE TABLE TestInstanceRedirection (

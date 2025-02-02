@@ -14,6 +14,5 @@ public class TestUser {
     private int testUserId;
     private int userId;
     private int testId;
-    private String answers;
     private boolean passed;
 }

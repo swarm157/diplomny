@@ -13,9 +13,9 @@ import java.sql.Date;
 @ToString
 public class TestQuestion {
     @Id
-    private int testQuestionId;
+    private int testQuestionID;
     private int numberInOrder;
-    private int testId;
+    private int testID;
     private String question;
     private int showAnswersPerInstance;
     private int timeForAnsweringInSec;

@@ -11,8 +11,8 @@ import org.springframework.data.annotation.Id;
 @ToString
 public class TestAnswerReward {
     @Id
-    private int testAnswerRewardId;
-    private int testAnswerId;
-    private int parameterId;
+    private int testAnswerRewardID;
+    private int testAnswerID;
+    private int parameterID;
     private int value;
 }

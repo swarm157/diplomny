@@ -32,7 +32,7 @@ CREATE TABLE TestQuestion (
 );
 
 CREATE TABLE TestAnswer (
-    testAnswer int,
+    testAnswerID int,
     testID int,
     answer varchar(255)
 );

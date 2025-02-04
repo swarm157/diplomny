@@ -15,7 +15,7 @@ import java.util.Objects;
 @ToString
 public class User {
     @Id
-    private int userId;
+    private int userID;
     private String name;
     private String lastName;
     private Date registration;

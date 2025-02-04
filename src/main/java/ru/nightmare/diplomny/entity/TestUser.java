@@ -11,8 +11,8 @@ import org.springframework.data.annotation.Id;
 @ToString
 public class TestUser {
     @Id
-    private int testUserId;
-    private int userId;
-    private int testId;
+    private int testUserID;
+    private int userID;
+    private int testID;
     private boolean passed;
 }

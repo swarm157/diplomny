@@ -3,6 +3,7 @@ package ru.nightmare.diplomny.model;
 import lombok.*;
 import ru.nightmare.diplomny.entity.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -32,6 +33,7 @@ public class TestProcessor {
     private final TestParameter[] parameter;
     private final TestAnswerReward[] reward;
     private final TestAnswer[] answer;
+    private final TestResult[] result;
 
     /*
         Ой крч шота тяжко надо логику сначала описать
@@ -47,16 +49,24 @@ public class TestProcessor {
 
         Далее чё надо...  А, я наверное сделаю выдачу результатов тоже статичной, сразу по созданию посчитать и в файнал переменные вывесить, вот, красота будет.
 
-        Так шо ещё... Такая-же таблица с параметр=баллы
+        Так шо ещё... Такая-же таблица с параметр=баллы, мы проходимся по каждому ответу, сразу же снимаем с перенаправления настоящий ответ и пишем его к сумме.
      */
     public void process() {
         if (isAllowedToPass()) {
-
+            Map<Integer, Integer> score = new HashMap<>();
             for (TestInstanceRedirection redirection : instanceRedirection) {
 
+                for (TestAnswerReward reward : reward) {
+                    if(reward.getTestAnswerID()==answer[redirection.getRedirectedToNumber()].getTestAnswerID()) {
+                        if(score.containsKey(reward.getParameterID()))
+                            score.put(reward.getParameterID(), reward.getValue());
+                        else
+                            score.put(reward.getParameterID(), score.get(reward.getParameterID())+reward.getValue());
+                    }
+                }
             }
         } else {
-            current.setPassed(isAllowedToPass());
+            current.setPassed(false);
         }
     }
 

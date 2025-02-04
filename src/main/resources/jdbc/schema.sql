@@ -1,7 +1,7 @@
 CREATE TABLE _User (
-    userID int,
+    user_id int,
     name varchar(255),
-    lastName varchar(255),
+    last_name varchar(255),
     registration date,
     admin bit,
     email varchar(255),
@@ -10,73 +10,73 @@ CREATE TABLE _User (
     avatar blob
 );
 
-INSERT INTO _User(userID, name, lastName, registration, admin, email, password, description, avatar) VALUES
+INSERT INTO _User(user_id, name, last_name, registration, admin, email, password, description, avatar) VALUES
 (0, 'admin', 'primary', null, true, 'yrakurbatov4@gmail.com', '123123', 'Главный архитектор', null);
 
 CREATE TABLE Test (
-    testID int,
+    test_id int,
     name varchar(255),
     description text(5000),
     previousID int
 );
 
 CREATE TABLE TestQuestion (
-    testQuestionID int,
-    numberInOrder int,
-    testID int,
+    test_question_id int,
+    number_in_order int,
+    test_id int,
     question varchar(255),
-    showAnswersPerInstance int,
-    timeForAnsweringInSec int,
+    show_answers_per_instance int,
+    time_for_answering_in_sec int,
     taken date,
-    answered date
+    answered date,
 );
 
 CREATE TABLE TestAnswer (
-    testAnswerID int,
-    testID int,
+    test_answer_id int,
+    test_id int,
     answer varchar(255)
 );
 
 CREATE TABLE TestAnswerReward (
-    testAnswerRewardID int,
-    testAnswerID int,
-    parameterID int,
+    test_answer_reward_id int,
+    test_answer_id int,
+    parameter_id int,
     reward int
 );
 
 CREATE TABLE TestParameter (
-    testParameterID int,
-    testID int,
+    test_parameter_id int,
+    test_id int,
     name varchar(255),
     required int,
-    previousRequired int
+    previous_required int
 );
 
 CREATE TABLE TestUser (
-    testUserID int,
-    userID int,
-    testID int,
+    test_user_id int,
+    user_id int,
+    test_id int,
     passed bit
 );
 
 CREATE TABLE TestResult (
-    testResultID int,
-    testParameterID int,
+    test_result_id int,
+    test_parameter_id int,
     summary int
 );
 
 CREATE TABLE TestUserAnswer(
-    testUserAnswerID int,
-    testUserID int,
+    test_user_answer_id int,
+    test_user_answer_id int,
     answer int
 );
 
 CREATE TABLE TestInstanceRedirection (
-    testInstanceRedirectionID int,
-    userID int,
-    testID int,
-    testAnswerID int,
-    redirectedToNumber int
+    test_instance_redirection_id int,
+    user_id int,
+    test_id int,
+    test_answer_id int,
+    redirected_to_number int
 );
 
 

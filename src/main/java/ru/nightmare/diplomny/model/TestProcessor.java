@@ -25,15 +25,18 @@ import java.util.Map;
  * У НЕГО НЕТ ЗАЩИТЫ, ПРОЕБЕШЬСЯ С ВЫЗОВОМ ВЫДАСТ НУЛПОИНТЕР И ХУЯК ПРОГРАММУ.
  * Всё, вот с такими условиями можно и переходить к написанию.
  */
+
 public class TestProcessor {
     private final TestUser previous;
     private final TestUser current;
-    private final Test test;
     private final TestInstanceRedirection[] instanceRedirection;
     private final TestParameter[] parameter;
     private final TestAnswerReward[] reward;
     private final TestAnswer[] answer;
+    @Getter
     private final TestResult[] result;
+    private final TestResult[] prevTestResult; // нужен для рассчета может ли пользователь после текущего теста идти дальше, если нет ему нужно вернуться на тест назад
+    private final TestParameter[] prevTestParameter; // нужен для рассчета может ли пользователь после текущего теста идти дальше, если нет ему нужно вернуться на тест назад
 
     /*
         Ой крч шота тяжко надо логику сначала описать
@@ -51,9 +54,22 @@ public class TestProcessor {
 
         Так шо ещё... Такая-же таблица с параметр=баллы, мы проходимся по каждому ответу, сразу же снимаем с перенаправления настоящий ответ и пишем его к сумме.
      */
+    {
+        process();
+    }
+    public Map<Integer, Integer> score;
+
+    @Getter
+    public String message = "";
+    @Getter
+    private Boolean previousIsNotPassed = false;
+    @Getter
+    private Boolean failedByResults = false;
+    @Getter
+    private Boolean failedByPreviousTestLowResults = false;
     public void process() {
         if (isAllowedToPass()) {
-            Map<Integer, Integer> score = new HashMap<>();
+            score = new HashMap<>();
             for (TestInstanceRedirection redirection : instanceRedirection) {
 
                 for (TestAnswerReward reward : reward) {
@@ -65,11 +81,52 @@ public class TestProcessor {
                     }
                 }
             }
+            boolean passed = true;// Проверка прохождения по параметрам, если хоть один завален не проходишь
+            for (TestParameter par :
+                    parameter) { // Проходим по параметрам
+                if(score.get(par.getTestParameterID())!=null) {// Защита от дурака
+                    for(TestResult res: result) {// Проходимся по всем результатам
+                        if(res.getTestParameterID()==par.getTestParameterID()) {// Если айди один и тот же
+                            res.setSummary(score.get(par.getTestParameterID()));// Пишем результат для дальнейшей работы
+                            // Надо проверить прохождение параметров плинтусу
+                            if(passed&&score.get(par.getTestParameterID())<par.getRequired()) {
+                                passed = false;
+                                current.setPassed(false);
+                                failedByResults = true;
+                                message = "Ваши результаты не прошли заявленный уровень, пожалуйста повторите попытку";
+                            }
+
+                        }
+                    }
+                    // Заодно проверить как дела поживают относительно теста родителя
+                    if(par.getPreviousRequired()!=0) { // Проверка заданности условия, должно иметь такое же имя
+                        for (TestParameter prev :
+                                parameter) {
+                            if (par.getName().equals(prev.getName())) {
+                                for(TestResult prevRes: prevTestResult) {
+                                    if(prevRes.getSummary()<par.getPreviousRequired()) {
+                                        current.setPassed(false);
+                                        failedByPreviousTestLowResults = true;
+                                        message = "Результаты предыдущего теста не удовлетворительно сочетаются с данным, пожалуйста получить результат выше";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         } else {
+            message = "Ой, кажется ты ещё не прошёл предыдущий тест, пожалуйста пройди сначала его";
             current.setPassed(false);
+            previousIsNotPassed = true;
+        }
+        if(!previousIsNotPassed && !failedByResults && !failedByPreviousTestLowResults) {
+            current.setPassed(true);
+            message = "Поздравляем! Вы прошли тест!";
         }
     }
 
+    public boolean isPassed() {return !previousIsNotPassed && !failedByResults && !failedByPreviousTestLowResults;}
     public boolean isAllowedToPass() {
         return previous == null || previous.isPassed();
     }

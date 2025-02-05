@@ -16,10 +16,12 @@ public class MyController {
         return niy;
     }
 
+    @GetMapping
     public String getTest() {
         return niy;
     }
 
+    @GetMapping
     public String getTestAnswer() {
         return niy;
     }

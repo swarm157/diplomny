@@ -22,5 +22,6 @@ public class TestResult {
     @Id
     private int testResultID;
     private int testParameterID;
+    private int testUserID;
     private int summary;
 }

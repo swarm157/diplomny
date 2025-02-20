@@ -14,5 +14,5 @@ public class Test {
     private int testID;
     private String name;
     private String description;
-    private Integer previousId;
+    private int previousId;
 }

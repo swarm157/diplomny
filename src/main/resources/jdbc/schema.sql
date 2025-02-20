@@ -27,8 +27,6 @@ CREATE TABLE TestQuestion (
     question varchar(255),
     show_answers_per_instance int,
     time_for_answering_in_sec int,
-    taken date,
-    answered date,
 );
 
 CREATE TABLE TestAnswer (
@@ -62,19 +60,22 @@ CREATE TABLE TestUser (
 CREATE TABLE TestResult (
     test_result_id int,
     test_parameter_id int,
+    test_user_id int,
     summary int
 );
 
 CREATE TABLE TestUserAnswer(
     test_user_answer_id int,
-    test_user_answer_id int,
+    test_user_id int,
+    taken date,
+    answered date,
     answer int
 );
 
 CREATE TABLE TestInstanceRedirection (
     test_instance_redirection_id int,
-    user_id int,
-    test_id int,
+    test_question_id int,
+    test_user_id int,
     test_answer_id int,
     redirected_to_number int
 );

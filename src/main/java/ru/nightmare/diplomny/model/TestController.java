@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.nightmare.diplomny.entity.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -44,6 +45,7 @@ public class TestController {
     }
 
     @AllArgsConstructor
+    static
     class Test {
         Integer id;
         String name;
@@ -54,6 +56,7 @@ public class TestController {
     }
 
     @AllArgsConstructor
+    static
     class Question {
         Integer id;
         Integer testID;
@@ -61,19 +64,24 @@ public class TestController {
         List<String> answers;
 
     }
-    public String questionToJson(TestQuestion question, User user) {
+    public String questionToJson(TestQuestion question, TestUser user) throws SQLException {
         return gson.toJson(new Question(question.getTestQuestionID(), question.getTestID(), question.getQuestion(), dbController.getAnswers(question, user)));
     }
-    public String testToJson(User user, ru.nightmare.diplomny.entity.Test test) {
+    public String testToJson(User user, ru.nightmare.diplomny.entity.Test test) throws SQLException {
         TestProcessor tp = dbController.testFor(user, test);
         return gson.toJson(new Test(test.getTestID(), test.getName(), test.getDescription(), tp.isPassed(), tp.isAllowedToPass(), tp.getFailedByPreviousTestLowResults()));
     }
 
     public String resultToJson() {
-
+        return gson.toJson();
     }
-    public void generateTestUsersFor(int userID) {}
-    public void generateRedirectionFor(int userID) {}
-    public void revalidateTestTree() {}
+    public String acceptUserAnswer(User user, int answer) throws SQLException {}
+    public TestQuestion getNextQuestion(TestUser user) throws SQLException {}
+    public TestUser getCurrentlyPassingTest(User user) throws SQLException {}
+    public String registerUser(String name, String lastName, String email, String description, String password) throws SQLException {}
+    public String updateDescription(User user, String description) throws SQLException {}
+    public void generateTestUsersFor(int userID) throws SQLException {}
+    public void generateRedirectionFor(int userID) throws SQLException {}
+    public void revalidateTestTree() throws SQLException {}
 
 }

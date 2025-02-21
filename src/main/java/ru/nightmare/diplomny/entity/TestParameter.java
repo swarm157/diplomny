@@ -2,6 +2,9 @@ package ru.nightmare.diplomny.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+
+import java.util.Set;
 
 @Setter
 @Getter
@@ -16,4 +19,6 @@ public class TestParameter {
     private String name;
     private Integer required;
     private Integer previousRequired;
+    @MappedCollection(idColumn = "test_parameter_id")
+    Set<TestParameter> testParameter;
 }

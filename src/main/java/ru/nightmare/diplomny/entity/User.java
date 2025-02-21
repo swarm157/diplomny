@@ -2,11 +2,14 @@ package ru.nightmare.diplomny.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -26,4 +29,8 @@ public class User {
     private String password;
     private String description;
     private Byte[] avatar;
+
+    @MappedCollection(idColumn = "user_id")
+    private Set<TestUser> testUsers;
+
 }

@@ -1,83 +1,107 @@
-CREATE TABLE _User (
-    user_id int,
-    name varchar(255),
-    last_name varchar(255),
+CREATE TABLE _user (
+    user_id int not null,
+    name varchar(255) not null,
+    last_name varchar(255) not null,
     registration date,
     admin bit,
     email varchar(255),
-    password varchar(255),
+    password varchar(255) not null,
     description text(5000),
-    avatar blob
+    avatar blob,
+    CONSTRAINT _user_pk PRIMARY KEY (user_id)
 );
 
-INSERT INTO _User(user_id, name, last_name, registration, admin, email, password, description, avatar) VALUES
+INSERT INTO _user(user_id, name, last_name, registration, admin, email, password, description, avatar) VALUES
 (0, 'admin', 'primary', null, true, 'yrakurbatov4@gmail.com', '123123', 'Главный архитектор', null);
 
-CREATE TABLE Test (
-    test_id int,
+CREATE TABLE test (
+    test_id int not null,
     name varchar(255),
     description text(5000),
-    previousID int
+    previous_id int,
+    CONSTRAINT test_pk PRIMARY KEY (test_id),
+    CONSTRAINT test_fk FOREIGN KEY (previous_id) REFERENCES test(previous_id)
 );
 
-CREATE TABLE TestQuestion (
-    test_question_id int,
-    number_in_order int,
-    test_id int,
-    question varchar(255),
-    show_answers_per_instance int,
-    time_for_answering_in_sec int,
+CREATE TABLE test_question (
+    test_question_id int not null,
+    number_in_order int not null,
+    test_id int not null,
+    question varchar(255) not null,
+    show_answers_per_instance int not null,
+    time_for_answering_in_sec int not null,
+    CONSTRAINT test_question_pk PRIMARY KEY (test_question_id),
+    CONSTRAINT test_question_fk FOREIGN KEY (test_id) REFERENCES test(test_id) ON DELETE CASCADE
 );
 
-CREATE TABLE TestAnswer (
-    test_answer_id int,
-    test_question_id int,
-    answer varchar(255)
+CREATE TABLE test_answer (
+    test_answer_id int not null,
+    test_question_id int not null,
+    answer varchar(255) not null,
+    CONSTRAINT test_answer_pk PRIMARY KEY (test_answer_id),
+    CONSTRAINT test_answer_fk FOREIGN KEY (test_question_id) REFERENCES test_question(test_question_id) ON DELETE CASCADE
 );
 
-CREATE TABLE TestAnswerReward (
-    test_answer_reward_id int,
-    test_answer_id int,
-    parameter_id int,
-    reward int
+CREATE TABLE test_answer_reward (
+    test_answer_reward_id int not null,
+    test_answer_id int not null,
+    parameter_id int not null,
+    reward int not null,
+    CONSTRAINT test_answer_reward_pk PRIMARY KEY (test_answer_reward_id),
+    CONSTRAINT test_answer_reward_fk FOREIGN KEY (test_answer_id) REFERENCES test_answer(test_answer_id) ON DELETE CASCADE,
+    CONSTRAINT test_answer_reward_fk FOREIGN KEY (parameter_id) REFERENCES test_parameter(test_parameter_id) ON DELETE CASCADE
 );
 
-CREATE TABLE TestParameter (
-    test_parameter_id int,
-    test_id int,
-    name varchar(255),
-    required int,
-    previous_required int
+CREATE TABLE test_parameter (
+    test_parameter_id int not null,
+    test_id int not null,
+    name varchar(255) not null,
+    required int not null,
+    previous_required int,
+    CONSTRAINT test_parameter_pk PRIMARY KEY (test_parameter_id),
+    CONSTRAINT test_parameter_fk FOREIGN KEY (test_id) REFERENCES test(test_id) ON DELETE CASCADE
 );
 
-CREATE TABLE TestUser (
-    test_user_id int,
-    user_id int,
-    test_id int,
-    passed bit
+CREATE TABLE test_user (
+    test_user_id int not null,
+    user_id int not null,
+    test_id int not null,
+    passed bit,
+    CONSTRAINT test_user_pk PRIMARY KEY (test_user_id),
+    CONSTRAINT test_user_fk FOREIGN KEY (user_id) REFERENCES _user(user_id) ON DELETE CASCADE,
+    CONSTRAINT test_user_fk FOREIGN KEY (test_id) REFERENCES test(test_id) ON DELETE CASCADE
 );
 
-CREATE TABLE TestResult (
-    test_result_id int,
-    test_parameter_id int,
-    test_user_id int,
-    summary int
+CREATE TABLE test_result (
+    test_result_id int not null,
+    test_parameter_id int not null,
+    test_user_id int not null,
+    summary int not null,
+    CONSTRAINT test_result_pk PRIMARY KEY (test_result_id),
+    CONSTRAINT test_result_fk FOREIGN KEY (test_parameter_id) REFERENCES test_parameter(test_parameter_id) ON DELETE CASCADE,
+    CONSTRAINT test_result_fk FOREIGN KEY (test_user_id) REFERENCES test_user(test_user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE TestUserAnswer(
-    test_user_answer_id int,
-    test_user_id int,
+CREATE TABLE test_user_answer(
+    test_user_answer_id int not null,
+    test_user_id int not null,
     taken date,
     answered date,
-    answer int
+    answer int not null,
+    CONSTRAINT test_user_answer_pk PRIMARY KEY (test_user_answer_id),
+    CONSTRAINT test_user_answer_fk FOREIGN KEY (test_user_id) REFERENCES test_user(test_user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE TestInstanceRedirection (
+CREATE TABLE test_instance_redirection (
     test_instance_redirection_id int,
     test_question_id int,
     test_user_id int,
     test_answer_id int,
-    redirected_to_number int
+    redirected_to_number int,
+    CONSTRAINT test_instance_redirection_pk PRIMARY KEY (test_instance_redirection_id),
+    CONSTRAINT test_instance_redirection_fk FOREIGN KEY (test_question_id) REFERENCES test_question(test_question_id) ON DELETE CASCADE,
+    CONSTRAINT test_instance_redirection_fk FOREIGN KEY (test_user_id) REFERENCES test_user(test_user_id) ON DELETE CASCADE,
+    CONSTRAINT test_instance_redirection_fk FOREIGN KEY (test_answer_id) REFERENCES test_answer(test_answer_id) ON DELETE CASCADE
 );
 
 

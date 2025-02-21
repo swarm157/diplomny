@@ -23,7 +23,7 @@ public class TestInstanceRedirectionService {
 
     // Read
     public Iterable<TestInstanceRedirection> getAllTestInstanceRedirection(int testUserId, int questionId) {
-        return testInstanceRedirectionRepository.findAllByTestUserIDAndTestQuestionID(testUserId, questionId);
+        return testInstanceRedirectionRepository.findAllByTestUserIDAndTestQuestionIDOrderByRedirectedToNumberAsc(testUserId, questionId);
     }
 
 

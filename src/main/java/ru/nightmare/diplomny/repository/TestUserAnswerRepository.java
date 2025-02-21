@@ -6,4 +6,8 @@ import ru.nightmare.diplomny.entity.TestUserAnswer;
 
 public interface TestUserAnswerRepository extends CrudRepository<TestUserAnswer, Integer> {
     Iterable<TestUserAnswer> findByTestUserID(int testUserID);
+
+    TestUserAnswer findByTestUserIDOrderByAnsweredAsc(int testUserID);
+
+    TestUserAnswer findByTestUserIDOrderByAnsweredDesc(int testUserID);
 }

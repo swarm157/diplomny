@@ -25,6 +25,9 @@ public class TestUserAnswerService {
         return testUserAnswerRepository.findByTestUserID(testUser);
     }
 
+    public TestUserAnswer getLastTestUserAnswer(int testUser) {
+        return testUserAnswerRepository.findByTestUserIDOrderByAnsweredDesc(testUser);
+    }
     public TestUserAnswer getTestUserAnswer(int id) {
         return testUserAnswerRepository.findById(id).orElseThrow();
     }

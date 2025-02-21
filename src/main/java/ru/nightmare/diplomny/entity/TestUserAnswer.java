@@ -20,9 +20,9 @@ import java.sql.Date;
 
 public class TestUserAnswer {
     @Id
-    private int testUserAnswerID;
-    private int testUserID;
+    private Integer testUserAnswerID;
+    private Integer testUserID;
     private Date taken;
     private Date answered;
-    private int answer;
+    private Integer answer;
 }

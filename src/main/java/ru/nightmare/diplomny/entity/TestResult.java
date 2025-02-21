@@ -20,8 +20,8 @@ import org.springframework.data.annotation.Id;
 
 public class TestResult {
     @Id
-    private int testResultID;
-    private int testParameterID;
-    private int testUserID;
-    private int summary;
+    private Integer testResultID;
+    private Integer testParameterID;
+    private Integer testUserID;
+    private Integer summary;
 }

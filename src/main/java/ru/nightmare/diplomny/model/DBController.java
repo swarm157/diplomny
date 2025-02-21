@@ -46,6 +46,8 @@ public class DBController {
     TestParameterService testParameterService;
 
 
+
+
     private Statement getStatement() throws SQLException {
         return source.getConnection().createStatement();
     }
@@ -63,7 +65,7 @@ public class DBController {
 
         PreparedStatement prepared = getPrepared(
                 "SELECT test_instance_redirection_id, test_answer_id, redirected_to_number" +
-                " FROM TestInstanceRedirection" +
+                " FROM test_instance_redirection" +
                 " WHERE test_user_id = ? AND test_question_id = ?");
         prepared.setInt(1, user.getTestUserID());
         prepared.setInt(2, question.getTestQuestionID());
@@ -78,7 +80,7 @@ public class DBController {
             int testAnswerId = redirection.getInt("test_answer_id");
             int redirectedToNumber = redirection.getInt("redirected_to_number");
 
-            PreparedStatement prepared2 = getPrepared("SELECT answer FROM TestAnswer where id = ?");
+            PreparedStatement prepared2 = getPrepared("SELECT answer FROM test_answer where id = ?");
 
             prepared2.setInt(1, testAnswerId);
             ResultSet answer = prepared2.executeQuery();
@@ -112,7 +114,7 @@ public class DBController {
 
      */
     public TestProcessor testFor(User user, Test test) throws SQLException {
-        PreparedStatement testCurrent = getPrepared("SELECT * FROM TestUser WHERE user_id = ? AND test_id = ?");
+        PreparedStatement testCurrent = getPrepared("SELECT * FROM test_user WHERE user_id = ? AND test_id = ?");
         testCurrent.setInt(1, user.getUserID());
         testCurrent.setInt(2, test.getTestID());
         ResultSet s = testCurrent.executeQuery();
@@ -120,7 +122,7 @@ public class DBController {
         if(s.next()) {
             userCurrent = new TestUser(s.getInt("test_user_id"), s.getInt("user_id"), s.getInt("test_id"), s.getBoolean("passed"));
         }
-        PreparedStatement testPrevious = getPrepared("SELECT * FROM TestUser WHERE user_id = ? AND test_id = ?");
+        PreparedStatement testPrevious = getPrepared("SELECT * FROM test_user WHERE user_id = ? AND test_id = ?");
         testPrevious.setInt(1, user.getUserID());
         testPrevious.setInt(2, test.getPreviousId());
         s = testPrevious.executeQuery();
@@ -128,7 +130,7 @@ public class DBController {
         if(s.next()) {
             userPrevious = new TestUser(s.getInt("test_user_id"), s.getInt("user_id"), s.getInt("test_id"), s.getBoolean("passed"));
         }
-        PreparedStatement redirection = getPrepared("SELECT * FROM TestRedirection WHERE test_user_id = ?");
+        PreparedStatement redirection = getPrepared("SELECT * FROM test_redirection WHERE test_user_id = ?");
         TestInstanceRedirection[] testInstanceRedirection = null;
         if (userCurrent != null) {
             redirection.setInt(1, userCurrent.getTestUserID());
@@ -141,7 +143,7 @@ public class DBController {
             testInstanceRedirection = testInstanceRedirections.toArray(new TestInstanceRedirection[0]);
         }
         TestParameter[] testParameters = null;
-        PreparedStatement testParameter = getPrepared("SELECT * FROM TestParameter WHERE test_id = ?");
+        PreparedStatement testParameter = getPrepared("SELECT * FROM test_parameter WHERE test_id = ?");
         testParameter.setInt(1, test.getTestID());
         s = testParameter.executeQuery();
         List<TestParameter> parameters = new ArrayList<>();
@@ -151,7 +153,7 @@ public class DBController {
         testParameters = parameters.toArray(new TestParameter[0]);
         TestAnswerReward[] testAnswerRewards = null;
         for (TestParameter parameter : testParameters) {
-            PreparedStatement testAnswerReward = getPrepared("SELECT * FROM TestAnswerReward WHERE parameter_id = ?");
+            PreparedStatement testAnswerReward = getPrepared("SELECT * FROM test_answer_reward WHERE parameter_id = ?");
             testAnswerReward.setInt(1, parameter.getTestParameterID());
             s = testAnswerReward.executeQuery();
             List<TestAnswerReward> testAnswerRewardList = new ArrayList<>();
@@ -167,26 +169,8 @@ public class DBController {
             testAnswerList.add(new TestAnswer(s.getInt("test_answer_id"), s.getInt("test_id"), s.getString("answer")));
         }
         testAnswers = testAnswerList.toArray(new TestAnswer[0]);
-        TestResult[] testResults;
-        List<TestResult> testResultList = new ArrayList<>();
-        if (userCurrent != null) {
-            s = smartSelect(TestResult.class.getName(), "test_user_id = ?", userCurrent.getTestUserID());
-            while (s.next()) {
-                testResultList.add(new TestResult(s.getInt("test_result_id"), s.getInt("test_parameter_id"), s.getInt("test_user_id"), s.getInt("summary")));
-            }
-        }
-        testResults = testResultList.toArray(new TestResult[0]);
-        TestResult[] testResultsP;
-        List<TestResult> testResultListP = new ArrayList<>();
-        if (userPrevious != null) {
-            s = smartSelect(TestResult.class.getName(), "test_user_id = ?", userPrevious.getTestUserID());
-            while (s.next()) {
-                testResultListP.add(new TestResult(s.getInt("test_result_id"), s.getInt("test_parameter_id"), s.getInt("test_user_id"), s.getInt("summary")));
-            }
-        }
-        testResultsP = testResultListP.toArray(new TestResult[0]);
         TestParameter[] testParametersP = null;
-        PreparedStatement testParameterP = getPrepared("SELECT * FROM TestParameter WHERE test_id = ?");
+        PreparedStatement testParameterP = getPrepared("SELECT * FROM test_parameter WHERE test_id = ?");
         testParameterP.setInt(1, test.getPreviousId());
         s = testParameterP.executeQuery();
         List<TestParameter> parametersP = new ArrayList<>();
@@ -194,6 +178,28 @@ public class DBController {
             parametersP.add(new TestParameter(s.getInt("test_parameter_id"), s.getInt("test_id"), s.getString("name"), s.getInt("required"), s.getInt("previous_required")));
         }
         testParametersP = parametersP.toArray(new TestParameter[0]);
+        TestResult[] testResults;
+        List<TestResult> testResultList = new ArrayList<>();
+        if (userCurrent != null) {
+            //System.out.println("            s = smartSelect(\"test_result\", \"test_user_id = ?\", userCurrent.getTestUserID());\n");
+            s = smartSelect("test_result", "test_id = ? AND user_id = ?", test.getPreviousId(), user.getUserID());
+            //s = smartSelect("test_result", "test_user_id = ?", test.getPreviousId());
+            while (s.next()) {
+                testResultList.add(new TestResult(s.getInt("test_result_id"), s.getInt("test_parameter_id"), s.getInt("test_user_id"), s.getInt("summary")));
+            }
+        }
+        testResults = testResultList.toArray(new TestResult[0]);
+
+        TestResult[] testResultsP;
+        List<TestResult> testResultListP = new ArrayList<>();
+        if (userPrevious != null) {
+            s = smartSelect("test_result", "test_user_id = ?", userPrevious.getTestUserID());
+            while (s.next()) {
+                testResultListP.add(new TestResult(s.getInt("test_result_id"), s.getInt("test_parameter_id"), s.getInt("test_user_id"), s.getInt("summary")));
+            }
+        }
+        testResultsP = testResultListP.toArray(new TestResult[0]);
+
         return new TestProcessor(userCurrent, userPrevious, testInstanceRedirection, testParameters,
                 testAnswerRewards, testAnswers, testResults, testResultsP, testParametersP,
                 null, "", false, false, false);

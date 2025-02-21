@@ -2,6 +2,7 @@ package ru.nightmare.diplomny.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.sql.Date;
 import java.util.Arrays;
@@ -13,15 +14,16 @@ import java.util.Objects;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
+@Table("_user")
 public class User {
     @Id
-    private int userID;
+    private Integer userID;
     private String name;
     private String lastName;
     private Date registration;
-    private boolean admin;
+    private Boolean admin;
     private String email;
     private String password;
     private String description;
-    private byte[] avatar;
+    private Byte[] avatar;
 }

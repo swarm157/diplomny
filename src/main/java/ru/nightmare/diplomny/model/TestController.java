@@ -8,9 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.nightmare.diplomny.entity.*;
+import ru.nightmare.diplomny.service.*;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 /*
@@ -28,6 +31,29 @@ public class TestController {
     private Logger log = LoggerFactory.getLogger(TestController.class.getName());
     @Autowired
     DBController dbController;
+    @Autowired
+    DataSource source;
+
+    @Autowired
+    TestAnswerRewardService testAnswerRewardService;
+    @Autowired
+    TestAnswerService testAnswerService;
+    @Autowired
+    TestQuestionService testQuestionService;
+    @Autowired
+    TestInstanceRedirectionService testInstanceRedirectionService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    TestService testService;
+    @Autowired
+    TestUserService testUserService;
+    @Autowired
+    TestResultService testResultService;
+    @Autowired
+    TestUserAnswerService testUserAnswerService;
+    @Autowired
+    TestParameterService testParameterService;
     Gson gson = new Gson();
 
     @AllArgsConstructor
@@ -75,15 +101,25 @@ public class TestController {
     public String resultToJson() {
         return gson.toJson();
     }
-    public String acceptUserAnswer(User user, int answer) throws SQLException {}
-    public TestQuestion getNextQuestion(TestUser user) throws SQLException {}
-    public TestUser getCurrentlyPassingTest(User user) throws SQLException {}
-    public User registerUser(String name, String lastName, String email, String description, String password) throws SQLException {}
-    public String updateDescription(User user, String description) throws SQLException {}
-    public String getResult(TestUser user) throws SQLException {}
-    public User loginUser(String email, String password) {}
-    public void generateTestUsersFor(int userID) throws SQLException {}
-    public void generateRedirectionFor(int userID) throws SQLException {}
-    public void revalidateTestTree() throws SQLException {}
+    public String acceptUserAnswer(User user, int answer) throws SQLException, NoSuchElementException {}
+    public TestQuestion getNextQuestion(TestUser user) throws SQLException, NoSuchElementException {}
+    public TestUser getCurrentlyPassingTest(User user) throws SQLException, NoSuchElementException {}
+    public User registerUser(String name, String lastName, String email, String description, String password) throws SQLException, NoSuchElementException {}
+    public User updateDescription(User user, String description) throws SQLException, NoSuchElementException {}
+    public String getResult(TestUser user) throws SQLException, NoSuchElementException {}
+    public User loginUser(String email, String password) throws SQLException, NoSuchElementException {}
+    public User changeDescription(User user, String description) throws SQLException, NoSuchElementException {}
+    public ru.nightmare.diplomny.entity.Test createTest(String name, String description) throws SQLException, NoSuchElementException {}
+    public void deleteTest(int id) throws SQLException, NoSuchElementException {}
+    public TestQuestion createQuestion(int testId) throws SQLException {}
+    public TestQuestion changeQuestion(int id, String name, int testId, int inOrder, int perInstance) throws SQLException {}
+    public void deleteQuestion(int id) throws SQLException, NoSuchElementException {}
+    public TestAnswer createAnswer(int questionId, String name) {}
+    public TestAnswer changeAnswer(int id, int questionId, String name) {}
+
+    public void deleteAnswer(int id) throws SQLException, NoSuchElementException {}
+    public void generateTestUsersFor(int userID) throws SQLException, NoSuchElementException {}
+    public void generateRedirectionFor(int userID) throws SQLException, NoSuchElementException {}
+    public void revalidateTestTree() throws SQLException, NoSuchElementException {}
 
 }

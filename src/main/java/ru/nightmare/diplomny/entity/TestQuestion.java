@@ -13,10 +13,10 @@ import java.sql.Date;
 @ToString
 public class TestQuestion {
     @Id
-    private int testQuestionID;
-    private int numberInOrder;
-    private int testID;
+    private Integer testQuestionID;
+    private Integer numberInOrder;
+    private Integer testID;
     private String question;
-    private int showAnswersPerInstance;
-    private int timeForAnsweringInSec;
+    private Integer showAnswersPerInstance;
+    private Integer timeForAnsweringInSec;
 }

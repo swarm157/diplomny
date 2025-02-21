@@ -23,11 +23,16 @@ public class TestQuestionService {
 
     // Read
     public Iterable<TestQuestion> getAllTestQuestions(int testId) {
-        return testQuestionRepository.findAllByTestID(testId);
+        return testQuestionRepository.findAllByTestIDOrderByNumberInOrderAsc(testId);
     }
 
     public TestQuestion getTestQuestion(int id) {
         return testQuestionRepository.findById(id).orElseThrow();
+    }
+
+    public TestQuestion getNextTestQuestion(int prevId) {
+        TestQuestion prev = getTestQuestion(prevId);
+        return testQuestionRepository.findByTestIDAndNumberInOrder(prev.getTestID(), prev.getNumberInOrder() + 1);
     }
 
     // Update

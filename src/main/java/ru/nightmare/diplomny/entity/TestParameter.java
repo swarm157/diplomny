@@ -11,9 +11,9 @@ import org.springframework.data.annotation.Id;
 @ToString
 public class TestParameter {
     @Id
-    private int testParameterID;
-    private int testID;
+    private Integer testParameterID;
+    private Integer testID;
     private String name;
-    private int required;
-    private int previousRequired;
+    private Integer required;
+    private Integer previousRequired;
 }

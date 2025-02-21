@@ -19,6 +19,4 @@ public class TestQuestion {
     private String question;
     private int showAnswersPerInstance;
     private int timeForAnsweringInSec;
-    private Date taken;
-    private Date answered;
 }

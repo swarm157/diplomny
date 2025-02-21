@@ -78,8 +78,10 @@ public class TestController {
     public String acceptUserAnswer(User user, int answer) throws SQLException {}
     public TestQuestion getNextQuestion(TestUser user) throws SQLException {}
     public TestUser getCurrentlyPassingTest(User user) throws SQLException {}
-    public String registerUser(String name, String lastName, String email, String description, String password) throws SQLException {}
+    public User registerUser(String name, String lastName, String email, String description, String password) throws SQLException {}
     public String updateDescription(User user, String description) throws SQLException {}
+    public String getResult(TestUser user) throws SQLException {}
+    public User loginUser(String email, String password) {}
     public void generateTestUsersFor(int userID) throws SQLException {}
     public void generateRedirectionFor(int userID) throws SQLException {}
     public void revalidateTestTree() throws SQLException {}

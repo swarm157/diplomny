@@ -31,6 +31,6 @@ public class User {
     private Byte[] avatar;
 
     @MappedCollection(idColumn = "user_id")
-    private Set<TestUser> testUsers;
+    private transient Set<TestUser> testUsers;
 
 }

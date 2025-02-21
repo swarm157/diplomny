@@ -19,11 +19,18 @@ public class Test {
     private String description;
     private Integer previousId;
     @MappedCollection(idColumn = "previous_id")
-    Set<Test> test;
+    private transient Set<Test> test;
     @MappedCollection(idColumn = "test_id", keyColumn = "number_in_order")
-    Set<TestQuestion> testQuestion;
+    private transient Set<TestQuestion> testQuestion;
     @MappedCollection(idColumn = "test_id")
-    Set<TestUser> testUser;
+    private transient Set<TestUser> testUser;
     @MappedCollection(idColumn = "test_id")
-    Set<TestParameter> testParameter;
+    private transient Set<TestParameter> testParameter;
+
+    public Test(Integer testID, String name, String description, Integer previousId) {
+        this.testID = testID;
+        this.name = name;
+        this.description = description;
+        this.previousId = previousId;
+    }
 }

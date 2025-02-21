@@ -102,24 +102,24 @@ public class TestController {
         return gson.toJson();
     }
     public String acceptUserAnswer(User user, int answer) throws SQLException, NoSuchElementException {}
-    public TestQuestion getNextQuestion(TestUser user) throws SQLException, NoSuchElementException {}
-    public TestUser getCurrentlyPassingTest(User user) throws SQLException, NoSuchElementException {}
-    public User registerUser(String name, String lastName, String email, String description, String password) throws SQLException, NoSuchElementException {}
-    public User updateDescription(User user, String description) throws SQLException, NoSuchElementException {}
+    public String getNextQuestion(TestUser user) throws SQLException, NoSuchElementException {}
+    public String getCurrentlyPassingTest(User user) throws SQLException, NoSuchElementException {}
+    public String registerUser(String name, String lastName, String email, String description, String password) throws SQLException, NoSuchElementException {}
+    public String updateDescription(User user, String description) throws SQLException, NoSuchElementException {}
     public String getResult(TestUser user) throws SQLException, NoSuchElementException {}
-    public User loginUser(String email, String password) throws SQLException, NoSuchElementException {}
-    public User changeDescription(User user, String description) throws SQLException, NoSuchElementException {}
-    public ru.nightmare.diplomny.entity.Test createTest(String name, String description) throws SQLException, NoSuchElementException {}
-    public void deleteTest(int id) throws SQLException, NoSuchElementException {}
-    public TestQuestion createQuestion(int testId) throws SQLException {}
-    public TestQuestion changeQuestion(int id, String name, int testId, int inOrder, int perInstance) throws SQLException {}
-    public void deleteQuestion(int id) throws SQLException, NoSuchElementException {}
+    public String loginUser(String email, String password) throws SQLException, NoSuchElementException {}
+    public String changeDescription(User user, String description) throws SQLException, NoSuchElementException {}
+    public String createTest(String name, String description) throws SQLException, NoSuchElementException {}
+    public String deleteTest(int id) throws SQLException, NoSuchElementException {}
+    public String createQuestion(int testId) throws SQLException {}
+    public String changeQuestion(int id, String name, int testId, int inOrder, int perInstance) throws SQLException {}
+    public String deleteQuestion(int id) throws SQLException, NoSuchElementException {}
     public TestAnswer createAnswer(int questionId, String name) {}
     public TestAnswer changeAnswer(int id, int questionId, String name) {}
 
-    public void deleteAnswer(int id) throws SQLException, NoSuchElementException {}
-    public void generateTestUsersFor(int userID) throws SQLException, NoSuchElementException {}
-    public void generateRedirectionFor(int userID) throws SQLException, NoSuchElementException {}
-    public void revalidateTestTree() throws SQLException, NoSuchElementException {}
+    public String deleteAnswer(int id) throws SQLException, NoSuchElementException {}
+    public String generateTestUsersFor(int userID) throws SQLException, NoSuchElementException {}
+    public String generateRedirectionFor(int userID) throws SQLException, NoSuchElementException {}
+    public String revalidateTestTree() throws SQLException, NoSuchElementException {}
 
 }

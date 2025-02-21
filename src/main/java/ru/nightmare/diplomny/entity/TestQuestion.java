@@ -22,7 +22,16 @@ public class TestQuestion {
     private Integer showAnswersPerInstance;
     private Integer timeForAnsweringInSec;
     @MappedCollection(idColumn = "test_question_id")
-    Set<TestAnswer> testAnswer;
+    private transient Set<TestAnswer> testAnswer;
     @MappedCollection(idColumn = "test_id", keyColumn = "redirected_to_number")
-    Set<TestInstanceRedirection> redirection;
+    private transient Set<TestInstanceRedirection> redirection;
+
+    public TestQuestion(Integer testQuestionID, Integer numberInOrder, Integer testID, String question, Integer showAnswersPerInstance, Integer timeForAnsweringInSec) {
+        this.testQuestionID = testQuestionID;
+        this.numberInOrder = numberInOrder;
+        this.testID = testID;
+        this.question = question;
+        this.showAnswersPerInstance = showAnswersPerInstance;
+        this.timeForAnsweringInSec = timeForAnsweringInSec;
+    }
 }

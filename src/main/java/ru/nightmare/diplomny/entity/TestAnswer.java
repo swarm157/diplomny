@@ -18,7 +18,13 @@ public class TestAnswer {
     private Integer testQuestionID;
     private String answer;
     @MappedCollection(idColumn = "test_answer_id")
-    Set<TestInstanceRedirection> redirection;
+    private transient Set<TestInstanceRedirection> redirection;
     @MappedCollection(idColumn = "test_answer_id")
-    Set<TestAnswerReward> testAnswerReward;
+    private transient Set<TestAnswerReward> testAnswerReward;
+
+    public TestAnswer(Integer testAnswerID, Integer testQuestionID, String answer) {
+        this.testAnswerID = testAnswerID;
+        this.testQuestionID = testQuestionID;
+        this.answer = answer;
+    }
 }

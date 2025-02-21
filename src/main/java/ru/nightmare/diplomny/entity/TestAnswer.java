@@ -12,6 +12,6 @@ import org.springframework.data.annotation.Id;
 public class TestAnswer {
     @Id
     private int testAnswerID;
-    private int testID;
+    private int testQuestionID;
     private String answer;
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Component;
 import ru.nightmare.diplomny.entity.*;
+import ru.nightmare.diplomny.service.*;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -22,6 +23,28 @@ public class DBController {
 
     @Autowired
     DataSource source;
+
+    @Autowired
+    TestAnswerRewardService testAnswerRewardService;
+    @Autowired
+    TestAnswerService testAnswerService;
+    @Autowired
+    TestQuestionService testQuestionService;
+    @Autowired
+    TestInstanceRedirectionService testInstanceRedirectionService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    TestService testService;
+    @Autowired
+    TestUserService testUserService;
+    @Autowired
+    TestResultService testResultService;
+    @Autowired
+    TestUserAnswerService testUserAnswerService;
+    @Autowired
+    TestParameterService testParameterService;
+
 
     private Statement getStatement() throws SQLException {
         return source.getConnection().createStatement();

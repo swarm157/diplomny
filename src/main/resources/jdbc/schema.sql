@@ -31,7 +31,7 @@ CREATE TABLE TestQuestion (
 
 CREATE TABLE TestAnswer (
     test_answer_id int,
-    test_id int,
+    test_question_id int,
     answer varchar(255)
 );
 

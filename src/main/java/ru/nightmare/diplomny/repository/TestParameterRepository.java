@@ -5,4 +5,5 @@ import ru.nightmare.diplomny.entity.Test;
 import ru.nightmare.diplomny.entity.TestParameter;
 
 public interface TestParameterRepository extends CrudRepository<TestParameter, Integer> {
+    Iterable<TestParameter> findAllByTestID(int testID);
 }

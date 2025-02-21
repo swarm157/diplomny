@@ -12,8 +12,8 @@ import org.springframework.data.annotation.Id;
 public class TestInstanceRedirection {
     @Id
     private int testInstanceRedirectionID;
-    private int userID;
-    private int testID;
+    private int testQuestionID;
+    private int testUserID;
     private int testAnswerID;
     private int redirectedToNumber;
 }

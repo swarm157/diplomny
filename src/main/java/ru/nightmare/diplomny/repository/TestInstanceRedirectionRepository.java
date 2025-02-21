@@ -5,4 +5,5 @@ import ru.nightmare.diplomny.entity.Test;
 import ru.nightmare.diplomny.entity.TestInstanceRedirection;
 
 public interface TestInstanceRedirectionRepository extends CrudRepository<TestInstanceRedirection, Integer> {
+    Iterable<TestInstanceRedirection> findAllByTestUserIDAndTestQuestionID(int testUserID, int testQuestionID);
 }

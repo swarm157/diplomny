@@ -25,12 +25,12 @@ public class TestService {
         return testRepository.findAll();
     }
 
-    public Test getTestAnswer(int testAnswerId) {
-        return testRepository.findById(testAnswerId).orElseThrow();
+    public Test getTest(int testId) {
+        return testRepository.findById(testId).orElseThrow();
     }
 
     // Update
-    public Test updateTestAnswer(int id, String name, String description, int prevId) {
+    public Test updateTest(int id, String name, String description, int prevId) {
         Test test = testRepository.findById(id).orElseThrow();
         test.setName(name);
         test.setDescription(description);

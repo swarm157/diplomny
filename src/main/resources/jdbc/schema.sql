@@ -104,11 +104,18 @@ CREATE TABLE test_instance_redirection (
     CONSTRAINT test_instance_redirection_test_answer_fk FOREIGN KEY (test_answer_id) REFERENCES test_answer(test_answer_id) ON DELETE CASCADE
 );
 
+CREATE table user_state (
+    user_state_id int,
+    state varchar(8),
+);
 
+CREATE TABLE user_cursor (
+    user_cursor_id int,
+    user_state_id int,
+    user_id int,
+);
 
-
-
-
+INSERT INTO user_state(user_cursor_id, user_state_id, user_id) VALUES (  )
 
 
 

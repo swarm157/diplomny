@@ -12,8 +12,10 @@ import ru.nightmare.diplomny.service.*;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Component
 /*
@@ -62,7 +64,8 @@ public class TestController {
         Boolean passed;
 
         @AllArgsConstructor
-        class Row {
+        @NoArgsConstructor
+        static class Row {
             String name;
             int required;
             int value;
@@ -98,10 +101,49 @@ public class TestController {
         return gson.toJson(new Test(test.getTestID(), test.getName(), test.getDescription(), tp.isPassed(), tp.isAllowedToPass(), tp.getFailedByPreviousTestLowResults()));
     }
 
-    public String resultToJson() {
-        return gson.toJson();
+    public String resultToJson(User user, ru.nightmare.diplomny.entity.Test test) throws SQLException {
+        TestProcessor tp = dbController.testFor(user, test);
+
+        List<Result.Row> rows = new ArrayList<>();
+
+        List<TestParameter> parameters = new ArrayList<>(test.getTestParameter().stream().toList());
+
+        ru.nightmare.diplomny.entity.Test prev = testService.getTest(test.getPreviousId());
+
+        if(prev!=null) {
+            List<TestParameter> old = new ArrayList<>();
+            for(TestParameter tpp : parameters) {
+                prev.getTestParameter().forEach( oTpp -> {if(oTpp.getName().equals(tpp.getName())) {old.add(oTpp);}});
+            }
+            parameters.addAll(old);
+        }
+
+        for(TestParameter tpp : parameters) {
+            Result.Row row = new Result.Row();
+            row.name = tpp.getName();
+            row.value = 0;
+            row.required = tpp.getRequired();
+            for(TestResult result: tpp.getTestResult()) {
+                if(Objects.equals(result.getTestUserID(), user.getUserID())) {
+                    row.value = result.getSummary();
+                    break;
+                }
+            }
+            rows.add(row);
+        }
+        Result result = new Result(tp.message, tp.isPassed(), rows);
+        return gson.toJson(result);
     }
-    public String acceptUserAnswer(User user, int answer) throws SQLException, NoSuchElementException {}
+    /*
+        Нашёл то что не учёл когда писал архитектуру БД, всё бы ничего, но очень тяжело работать(невозможно нормальными средствами) работать без указателя
+        Вообщем концепция указателя.
+        Управляет положением пользователя в приложении, режет возможность быть там где ему не должно.
+        Например, заниматься двумя тестами одновременно, быть несколькими пользователями хоть это и немного другое и снижать нагрузку на сайт
+     */
+    public String takeUserAnswer(User user, int answer) throws SQLException, NoSuchElementException {
+        testUserService.get
+        testAnswerService.getTestAnswer()
+    }
     public String getNextQuestion(TestUser user) throws SQLException, NoSuchElementException {}
     public String getCurrentlyPassingTest(User user) throws SQLException, NoSuchElementException {}
     public String registerUser(String name, String lastName, String email, String description, String password) throws SQLException, NoSuchElementException {}

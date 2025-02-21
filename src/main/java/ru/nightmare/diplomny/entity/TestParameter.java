@@ -20,7 +20,7 @@ public class TestParameter {
     private Integer required;
     private Integer previousRequired;
     @MappedCollection(idColumn = "test_parameter_id")
-    private transient Set<TestParameter> testParameter;
+    private transient Set<TestResult> testResult;
 
     public TestParameter(Integer testParameterID, Integer testID, String name, Integer required, Integer previousRequired) {
         this.testParameterID = testParameterID;

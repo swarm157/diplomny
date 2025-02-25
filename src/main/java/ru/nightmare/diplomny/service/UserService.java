@@ -32,7 +32,7 @@ public class UserService {
     }
 
     // Update
-    public User updateUser(int id, byte[] avatar) {
+    public User updateUser(int id, Byte[] avatar) {
         User user = userRepository.findById(id).orElseThrow();
         user.setAvatar(avatar);
         return userRepository.save(user);

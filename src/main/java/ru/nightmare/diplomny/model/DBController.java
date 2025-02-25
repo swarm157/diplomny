@@ -44,7 +44,10 @@ public class DBController {
     TestUserAnswerService testUserAnswerService;
     @Autowired
     TestParameterService testParameterService;
-
+    @Autowired
+    UserStateService userStateService;
+    @Autowired
+    UserPointerService userPointerService;
 
 
 

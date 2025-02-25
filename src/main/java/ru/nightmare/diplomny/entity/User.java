@@ -2,13 +2,10 @@ package ru.nightmare.diplomny.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.sql.Date;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Set;
 
 @Setter
@@ -33,4 +30,6 @@ public class User {
     @MappedCollection(idColumn = "user_id")
     private transient Set<TestUser> testUsers;
 
+    @MappedCollection(idColumn = "user_id")
+    private transient Set<UserPointer> pointers;
 }

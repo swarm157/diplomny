@@ -16,8 +16,8 @@ INSERT INTO _user(user_id, name, last_name, registration, admin, email, password
 
 CREATE TABLE test (
     test_id int not null,
-    name varchar(255),
-    description text(5000),
+    name varchar(255) NOT NULL,
+    description text(5000) NOT NULL,
     previous_id int,
     CONSTRAINT test_pk PRIMARY KEY (test_id),
     CONSTRAINT test_previous_fk FOREIGN KEY (previous_id) REFERENCES test(previous_id)
@@ -93,11 +93,11 @@ CREATE TABLE test_user_answer(
 );
 
 CREATE TABLE test_instance_redirection (
-    test_instance_redirection_id int,
-    test_question_id int,
-    test_user_id int,
-    test_answer_id int,
-    redirected_to_number int,
+    test_instance_redirection_id int NOT NULL,
+    test_question_id int NOT NULL,
+    test_user_id int NOT NULL,
+    test_answer_id int NOT NULL,
+    redirected_to_number int NOT NULL,
     CONSTRAINT test_instance_redirection_pk PRIMARY KEY (test_instance_redirection_id),
     CONSTRAINT test_instance_redirection_test_question_fk FOREIGN KEY (test_question_id) REFERENCES test_question(test_question_id) ON DELETE CASCADE,
     CONSTRAINT test_instance_redirection_test_user_fk FOREIGN KEY (test_user_id) REFERENCES test_user(test_user_id) ON DELETE CASCADE,
@@ -105,17 +105,28 @@ CREATE TABLE test_instance_redirection (
 );
 
 CREATE table user_state (
-    user_state_id int,
-    state varchar(8),
+    user_state_id int NOT NULL,
+    state varchar(8) NOT NULL,
+    CONSTRAINT user_state_pk PRIMARY KEY (user_state_id)
 );
 
-CREATE TABLE user_cursor (
-    user_cursor_id int,
-    user_state_id int,
-    user_id int,
+CREATE TABLE user_pointer (
+    user_pointer_id int NOT NULL,
+    user_state_id int NOT NULL,
+    user_id int NOT NULL,
+    pointer int NOT NULL,
+    CONSTRAINT user_pointer_pk PRIMARY KEY (user_pointer_id),
+    CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES _user(user_id) ON DELETE CASCADE,
+    CONSTRAINT user_state_id_fk FOREIGN KEY (user_state_id) REFERENCES user_state(user_state_id) ON DELETE CASCADE
 );
 
-INSERT INTO user_state(user_cursor_id, user_state_id, user_id) VALUES (  )
+INSERT INTO user_state(user_state_id, state) VALUES (1, 'visitor');
+INSERT INTO user_state(user_state_id, state) VALUES (2, 'test');
+INSERT INTO user_state(user_state_id, state) VALUES (3, 'result');
+INSERT INTO user_state(user_state_id, state) VALUES (4, 'guest');
+INSERT INTO user_state(user_state_id, state) VALUES (5, 'reading');
+INSERT INTO user_state(user_state_id, state) VALUES (6, 'choosing');
+INSERT INTO user_state(user_state_id, state) VALUES (7, 'aborting');
 
 
 

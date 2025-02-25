@@ -56,6 +56,10 @@ public class TestController {
     TestUserAnswerService testUserAnswerService;
     @Autowired
     TestParameterService testParameterService;
+    @Autowired
+    UserStateService userStateService;
+    @Autowired
+    UserPointerService userPointerService;
     Gson gson = new Gson();
 
     @AllArgsConstructor
@@ -141,8 +145,13 @@ public class TestController {
         Например, заниматься двумя тестами одновременно, быть несколькими пользователями хоть это и немного другое и снижать нагрузку на сайт
      */
     public String takeUserAnswer(User user, int answer) throws SQLException, NoSuchElementException {
+        UserPointer pointer = user.getPointers().stream().toList().get(0);
         testUserService.get
         testAnswerService.getTestAnswer()
+    }
+
+    public String getUserById(int id) {
+        return gson.toJson(userService.getUser(id));
     }
     public String getNextQuestion(TestUser user) throws SQLException, NoSuchElementException {}
     public String getCurrentlyPassingTest(User user) throws SQLException, NoSuchElementException {}

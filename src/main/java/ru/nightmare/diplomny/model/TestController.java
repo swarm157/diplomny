@@ -62,6 +62,42 @@ public class TestController {
     UserPointerService userPointerService;
     Gson gson = new Gson();
 
+    public User changeUser(User user) {
+
+    }
+
+    public UserPointer getPointer(User user) {
+
+    }
+
+    public TestUser getTestUser(UserPointer pointer) {
+
+    }
+
+    public String getTest(Integer id) {
+
+    }
+
+    public String getAllTests(User user) {
+
+    }
+
+    public String beginTesting(User user, Integer id) {
+
+    }
+
+    public String endUpTesting(User user) {
+
+    }
+
+    public TestUser getTestUser(Integer id) {
+
+    }
+
+    public Integer getTimeUsed(Integer id) {
+
+    }
+
     @AllArgsConstructor
     class Result {
         String message;

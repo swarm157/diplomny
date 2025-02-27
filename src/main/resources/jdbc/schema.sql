@@ -120,13 +120,25 @@ CREATE TABLE user_pointer (
     CONSTRAINT user_state_id_fk FOREIGN KEY (user_state_id) REFERENCES user_state(user_state_id) ON DELETE CASCADE
 );
 
-INSERT INTO user_state(user_state_id, state) VALUES (1, 'visitor');
-INSERT INTO user_state(user_state_id, state) VALUES (2, 'test');
-INSERT INTO user_state(user_state_id, state) VALUES (3, 'result');
-INSERT INTO user_state(user_state_id, state) VALUES (4, 'guest');
-INSERT INTO user_state(user_state_id, state) VALUES (5, 'reading');
-INSERT INTO user_state(user_state_id, state) VALUES (6, 'choosing');
-INSERT INTO user_state(user_state_id, state) VALUES (7, 'aborting');
+INSERT INTO user_state(user_state_id, state) VALUES (1, 'nothing');
+INSERT INTO user_state(user_state_id, state) VALUES (2, 'testing');
+
+CREATE TABLE category (
+    category_id int NOT NULL,
+    name varchar(40) NOT NULL,
+    CONSTRAINT category_pk PRIMARY KEY (category_id)
+);
+
+CREATE TABLE book (
+    book_id int NOT NULL,
+    file varchar(255) NOT NULL,
+    preview blob NOT NULL,
+    name varchar(40) NOT NULL,
+    category_id int NOT NULL,
+    CONSTRAINT book_pk PRIMARY KEY (book_id),
+    CONSTRAINT category_id_fk FOREIGN KEY (category_id) REFERENCES category(category_id) ON DELETE CASCADE
+);
+
 
 
 

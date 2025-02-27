@@ -1,5 +1,7 @@
 package ru.nightmare.diplomny;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -50,5 +52,13 @@ public class Config {
                 .setName("dimplomy")
                 .setScriptEncoding("UTF-8")
                 .build();*/
+    }
+    @Bean
+    public Gson gson(GsonBuilder gsonBuilder) {
+        return gsonBuilder.create();
+    }
+    @Bean
+    public GsonBuilder gsonBuilder() {
+        return new GsonBuilder();
     }
 }

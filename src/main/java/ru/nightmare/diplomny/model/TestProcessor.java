@@ -128,7 +128,7 @@ public class TestProcessor {
 
     public boolean isPassed() {return !previousIsNotPassed && !failedByResults && !failedByPreviousTestLowResults;}
     public boolean isAllowedToPass() {
-        return previous == null || previous.isPassed();
+        return previous == null || previous.getPassed();
     }
 
     public boolean isRequirementsPassed() {

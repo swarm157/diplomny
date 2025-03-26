@@ -50,7 +50,6 @@ import java.util.logging.Logger;
  */
 public class MyController {
 
-    Logger log = Logger.getLogger(MyController.class.getName());
     @Autowired
     private TestController api;
 
@@ -522,7 +521,7 @@ public class MyController {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-                if(id!=null)
+                if(name!=null)
                     return ResponseEntity.ok(api.createCategory(name));
             } else {
                 return ResponseEntity.badRequest().build();
@@ -536,8 +535,8 @@ public class MyController {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-                if(id!=null)
-                    return ResponseEntity.ok();
+                if(id!=null && name!=null)
+                    return ResponseEntity.ok(api.changeCategory(id, name));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -551,7 +550,7 @@ public class MyController {
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
                 if(id!=null)
-                    return ResponseEntity.ok();
+                    return ResponseEntity.ok(api.deleteCategory(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -564,8 +563,7 @@ public class MyController {
             if(user!=null) {
                 UserPointer pointer = (UserPointer) session.getAttribute("pointer");
                 if(pointer!=null&&pointer.getUserStateID()==1) {
-                    if(id!=null)
-                        return ResponseEntity.ok();
+                    return ResponseEntity.ok(api.getAllCategory());
                 } else {
                     return ResponseEntity.badRequest().build();
                 }
@@ -573,13 +571,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/createBook")
-    public ResponseEntity<String> createBook(HttpSession session, @RequestParam Integer id, @RequestParam String name) throws SQLException {
+    public ResponseEntity<String> createBook(HttpSession session, @RequestParam String name, @RequestParam String file, @RequestParam Integer categoryId, @RequestParam Byte[] preview) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-                if(id!=null)
-                    return ResponseEntity.ok();
+                if(name!=null&&file!=null&&categoryId!=null&&preview!=null)
+                    return ResponseEntity.ok(api.createBook(name, file, categoryId, preview));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -587,13 +585,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/changeBook")
-    public ResponseEntity<String> changeBook(HttpSession session, @RequestParam Integer id) throws SQLException {
+    public ResponseEntity<String> changeBook(HttpSession session, @RequestParam Integer id, @RequestParam String name, @RequestParam String file, @RequestParam Integer categoryId, @RequestParam Byte[] preview) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-                if(id!=null)
-                    return ResponseEntity.ok();
+                if(id!=null&&name!=null&&file!=null&&categoryId!=null&&preview!=null)
+                    return ResponseEntity.ok(api.changeBook(id, name, file, categoryId, preview));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -607,7 +605,7 @@ public class MyController {
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
                 if(id!=null)
-                    return ResponseEntity.ok();
+                    return ResponseEntity.ok(api.deleteBook(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -621,7 +619,7 @@ public class MyController {
                 UserPointer pointer = (UserPointer) session.getAttribute("pointer");
                 if (pointer != null && pointer.getUserStateID() == 1) {
                     if(id!=null)
-                        return ResponseEntity.ok();
+                        return ResponseEntity.ok(api.getAllBooks(id));
                 } else {
                     return ResponseEntity.badRequest().build();
                 }

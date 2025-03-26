@@ -2,43 +2,47 @@ package ru.nightmare.diplomny.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.nightmare.diplomny.entity.Book;
 import ru.nightmare.diplomny.entity.TestAnswerReward;
+import ru.nightmare.diplomny.repository.BookRepository;
 import ru.nightmare.diplomny.repository.TestAnswerRewardRepository;
 
 @Service
 public class BookService {
     @Autowired
-    private TestAnswerRewardRepository testAnswerRewardRepository;
+    private BookRepository bookRepository;
 
     // Create
-    public TestAnswerReward createTestAnswer(int testAnswerId, int reward, int parameterId) {
-        TestAnswerReward testAnswerReward = new TestAnswerReward();
-        testAnswerReward.setTestAnswerID(testAnswerId);
-        testAnswerReward.setParameterID(parameterId);
-        testAnswerReward.setValue(reward);
-        return testAnswerRewardRepository.save(testAnswerReward);
+    public Book createBook(String name, String file, Integer categoryId, Byte[] preview) {
+        Book book = new Book();
+        book.setFile(file);
+        book.setName(name);
+        book.setPreview(preview);
+        book.setCategoryID(categoryId);
+        return bookRepository.save(book);
     }
 
     // Read
-    public Iterable<TestAnswerReward> getAllTestAnswerRewards(int testAnswerId) {
-        return testAnswerRewardRepository.findAllByTestAnswerID(testAnswerId);
+    public Iterable<Book> getAllBooks(int categoryId) {
+        return bookRepository.findByCategoryID(categoryId);
     }
 
-    public TestAnswerReward getTestAnswerReward(int id) {
-        return testAnswerRewardRepository.findById(id).orElseThrow();
+    public Book getBook(int id) {
+        return bookRepository.findById(id).orElseThrow();
     }
 
     // Update
-    public TestAnswerReward updateTestAnswerReward(int id, int testAnswerId, int reward, int parameterId) {
-        TestAnswerReward testAnswerReward = testAnswerRewardRepository.findById(id).orElseThrow();
-        testAnswerReward.setTestAnswerID(testAnswerId);
-        testAnswerReward.setParameterID(parameterId);
-        testAnswerReward.setValue(reward);
-        return testAnswerRewardRepository.save(testAnswerReward);
+    public Book updateBook(int id, String name, String file, Integer categoryId, Byte[] preview) {
+        Book book = bookRepository.findById(id).orElseThrow();
+        book.setFile(file);
+        book.setName(name);
+        book.setPreview(preview);
+        book.setCategoryID(categoryId);
+        return bookRepository.save(book);
     }
 
     // Delete
-    public void deleteTestAnswerReward(int id) {
-
+    public void deleteBook(int id) {
+        bookRepository.deleteById(id);
     }
 }

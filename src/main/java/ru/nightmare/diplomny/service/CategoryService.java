@@ -2,43 +2,41 @@ package ru.nightmare.diplomny.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.nightmare.diplomny.entity.Category;
 import ru.nightmare.diplomny.entity.TestAnswerReward;
+import ru.nightmare.diplomny.repository.CategoryRepository;
 import ru.nightmare.diplomny.repository.TestAnswerRewardRepository;
 
 @Service
 public class CategoryService {
     @Autowired
-    private TestAnswerRewardRepository testAnswerRewardRepository;
+    private CategoryRepository categoryRepository;
 
     // Create
-    public TestAnswerReward createTestAnswer(int testAnswerId, int reward, int parameterId) {
-        TestAnswerReward testAnswerReward = new TestAnswerReward();
-        testAnswerReward.setTestAnswerID(testAnswerId);
-        testAnswerReward.setParameterID(parameterId);
-        testAnswerReward.setValue(reward);
-        return testAnswerRewardRepository.save(testAnswerReward);
+    public Category createCategory(String name) {
+        Category category = new Category();
+        category.setName(name);
+        return categoryRepository.save(category);
     }
 
     // Read
-    public Iterable<TestAnswerReward> getAllTestAnswerRewards(int testAnswerId) {
-        return testAnswerRewardRepository.findAllByTestAnswerID(testAnswerId);
+    public Iterable<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 
-    public TestAnswerReward getTestAnswerReward(int id) {
-        return testAnswerRewardRepository.findById(id).orElseThrow();
+    public Category getCategory(int id) {
+        return categoryRepository.findById(id).orElseThrow();
     }
 
     // Update
-    public TestAnswerReward updateTestAnswerReward(int id, int testAnswerId, int reward, int parameterId) {
-        TestAnswerReward testAnswerReward = testAnswerRewardRepository.findById(id).orElseThrow();
-        testAnswerReward.setTestAnswerID(testAnswerId);
-        testAnswerReward.setParameterID(parameterId);
-        testAnswerReward.setValue(reward);
-        return testAnswerRewardRepository.save(testAnswerReward);
+    public Category updateCategory(int id, String name) {
+        Category category = categoryRepository.findById(id).orElseThrow();
+        category.setName(name);
+        return categoryRepository.save(category);
     }
 
     // Delete
-    public void deleteTestAnswerReward(int id) {
-
+    public void deleteCategory(int id) {
+        categoryRepository.deleteById(id);
     }
 }

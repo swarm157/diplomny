@@ -62,6 +62,10 @@ public class TestController {
     UserStateService userStateService;
     @Autowired
     UserPointerService userPointerService;
+    @Autowired
+    BookService bookService;
+    @Autowired
+    CategoryService categoryService;
     Gson gson = new Gson();
     @Autowired
     private TestUserAnswerRepository testUserAnswerRepository;
@@ -179,9 +183,31 @@ public class TestController {
     }
 
     public String createCategory(String name) {
-        return
+        return gson.toJson(categoryService.createCategory(name));
     }
-
+    public String changeCategory(int id, String name) {
+        return gson.toJson(categoryService.updateCategory(id, name));
+    }
+    public String deleteCategory(int id) {
+        categoryService.deleteCategory(id);
+        return "deleted";
+    }
+    public String getAllCategory() {
+        return gson.toJson(categoryService.getAllCategories());
+    }
+    public String createBook(String name, String file, Integer categoryId, Byte[] preview) {
+        return gson.toJson(bookService.createBook(name, file, categoryId, preview));
+    }
+    public String changeBook(Integer id, String name, String file, Integer categoryId, Byte[] preview) {
+        return gson.toJson(bookService.updateBook(id, name, file, categoryId, preview));
+    }
+    public String deleteBook(int id) {
+        bookService.deleteBook(id);
+        return "deleted";
+    }
+    public String getAllBooks(int categoryId) {
+        return gson.toJson(bookService.getAllBooks(categoryId));
+    }
     @AllArgsConstructor
     class Result {
         String message;

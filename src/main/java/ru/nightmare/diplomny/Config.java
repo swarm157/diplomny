@@ -37,7 +37,7 @@ public class Config {
         log.info("Connecting to database...");
         DataSource dataSource = dataSourceBuilder.build();
         log.info("Connected to database");
-        if (Files.notExists(new File(db).toPath())) {
+        if (Files.notExists(new File(db).toPath())&&(Files.notExists(new File(db+".mv.db").toPath())||Files.notExists(new File(db+".trace.db").toPath()))) {
             log.info("Creating database...");
             Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement();

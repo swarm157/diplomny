@@ -645,6 +645,7 @@ public class MyController {
     }
 
 
+
     private boolean isAdmin(HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user==null)

@@ -85,11 +85,13 @@ CREATE TABLE test_result (
 CREATE TABLE test_user_answer(
     test_user_answer_id int not null,
     test_user_id int not null,
+    test_question_id int not null,
     taken date,
     answered date,
-    answer int not null,
+    answer int,
     CONSTRAINT test_user_answer_pk PRIMARY KEY (test_user_answer_id),
-    CONSTRAINT test_user_answer_test_user_fk FOREIGN KEY (test_user_id) REFERENCES test_user(test_user_id) ON DELETE CASCADE
+    CONSTRAINT test_user_answer_test_user_fk FOREIGN KEY (test_user_id) REFERENCES test_user(test_user_id) ON DELETE CASCADE,
+    CONSTRAINT test_user_answer_test_question_fk FOREIGN KEY (test_question_id) REFERENCES test_question(test_question_id) ON DELETE CASCADE,
 );
 
 CREATE TABLE test_instance_redirection (
@@ -115,6 +117,7 @@ CREATE TABLE user_pointer (
     user_state_id int NOT NULL,
     user_id int NOT NULL,
     pointer int NOT NULL,
+    question int NOT NULL,
     CONSTRAINT user_pointer_pk PRIMARY KEY (user_pointer_id),
     CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES _user(user_id) ON DELETE CASCADE,
     CONSTRAINT user_state_id_fk FOREIGN KEY (user_state_id) REFERENCES user_state(user_state_id) ON DELETE CASCADE

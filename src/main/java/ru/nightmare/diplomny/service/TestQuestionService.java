@@ -35,6 +35,10 @@ public class TestQuestionService {
         return testQuestionRepository.findByTestIDAndNumberInOrder(prev.getTestID(), prev.getNumberInOrder() + 1);
     }
 
+    public TestQuestion getFirstTestQuestion(int testId) {
+        return testQuestionRepository.findByTestIDAndNumberInOrder(testId, 1);
+    }
+
     // Update
     public TestQuestion updateTestQuestion(int id, String name, int testId, int inOrder, int perInstance) {
         TestQuestion question = testQuestionRepository.findById(id).orElseThrow();
@@ -48,5 +52,13 @@ public class TestQuestionService {
     // Delete
     public void deleteTestQuestion(int id) {
         testQuestionRepository.deleteById(id);
+    }
+
+    public int getNumOfQuestions(int testId) {
+        int count = 0;
+        for (TestQuestion question : getAllTestQuestions(testId)) {
+            count += 1;
+        }
+        return count;
     }
 }

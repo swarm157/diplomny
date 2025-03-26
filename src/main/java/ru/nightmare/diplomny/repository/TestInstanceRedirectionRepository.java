@@ -8,4 +8,6 @@ public interface TestInstanceRedirectionRepository extends CrudRepository<TestIn
     Iterable<TestInstanceRedirection> findAllByTestUserIDAndTestQuestionID(int testUserID, int testQuestionID);
 
     Iterable<TestInstanceRedirection> findAllByTestUserIDAndTestQuestionIDOrderByRedirectedToNumberAsc(int testUserID, int testQuestionID);
+
+    void deleteTestInstanceRedirectionByTestAnswerID(Integer testAnswerID);
 }

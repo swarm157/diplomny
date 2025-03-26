@@ -10,4 +10,6 @@ public interface TestUserAnswerRepository extends CrudRepository<TestUserAnswer,
     TestUserAnswer findByTestUserIDOrderByAnsweredAsc(int testUserID);
 
     TestUserAnswer findByTestUserIDOrderByAnsweredDesc(int testUserID);
+
+    TestUserAnswer findByTestQuestionIDAndTestUserID(Integer testQuestionID, Integer testUserID);
 }

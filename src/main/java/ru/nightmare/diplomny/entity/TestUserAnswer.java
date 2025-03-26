@@ -22,6 +22,7 @@ public class TestUserAnswer {
     @Id
     private Integer testUserAnswerID;
     private Integer testUserID;
+    private Integer testQuestionID;
     private Date taken;
     private Date answered;
     private Integer answer;

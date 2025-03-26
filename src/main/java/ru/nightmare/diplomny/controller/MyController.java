@@ -2,6 +2,7 @@ package ru.nightmare.diplomny.controller;
 
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -11,11 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import ru.nightmare.diplomny.entity.*;
 import ru.nightmare.diplomny.model.TestController;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 /*
@@ -44,6 +50,7 @@ import java.util.Objects;
  */
 public class MyController {
 
+    Logger log = Logger.getLogger(MyController.class.getName());
     @Autowired
     private TestController api;
 
@@ -98,7 +105,7 @@ public class MyController {
             } else {
                 return ResponseEntity.badRequest().build();
             }
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
         return ResponseEntity.ok(user);
@@ -119,7 +126,7 @@ public class MyController {
             } else {
                 return ResponseEntity.badRequest().build();
             }
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
         return ResponseEntity.ok(user);
@@ -172,7 +179,7 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/beginTesting")
-    public ResponseEntity<String> beginTesting(HttpSession session, @RequestParam Integer id) {
+    public ResponseEntity<String> beginTesting(HttpSession session, @RequestParam Integer id) throws SQLException {
         User user = (User) session.getAttribute("user");
         if(user!=null&&id!=null) {
             String t = api.beginTesting(user, id);
@@ -185,14 +192,14 @@ public class MyController {
     public ResponseEntity<String> getResult(HttpSession session, @RequestParam Integer id) throws SQLException {
         User user = (User) session.getAttribute("user");
         if(user!=null) {
-            String t = api.getResult(api.getTestUser(id));
+            String t = api.getResult(api.getTestUser(user, id));
             session.setAttribute("pointer", api.getPointer(user));
             return ResponseEntity.ok(t);
         }
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/endUpTesting")
-    public ResponseEntity<String> endUpTesting(HttpSession session) {
+    public ResponseEntity<String> endUpTesting(HttpSession session) throws SQLException {
         User user = (User) session.getAttribute("user");
         if(user!=null) {
             String t = api.endUpTesting(user);
@@ -202,14 +209,16 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/getTests")
-    public ResponseEntity<String> getTests(HttpSession session) {
+    public ResponseEntity<String> getTests(HttpSession session) throws SQLException {
         return ResponseEntity.ok(api.getAllTests((User)session.getAttribute("user")));
     }
 
     @PostMapping("/getTimeUsed")
     public ResponseEntity<Integer> getTimeUsed(HttpSession session, @RequestParam Integer id) {
-        if(session.getAttribute("user")!=null)
-            return ResponseEntity.ok(api.getTimeUsed(id));
+        if(session.getAttribute("user")!=null) {
+            User user = (User) session.getAttribute("user");
+            return ResponseEntity.ok(api.getTimeUsed(user, id));
+        }
         return ResponseEntity.badRequest().build();
     }
 
@@ -220,12 +229,14 @@ public class MyController {
         Время писать для админки
      */
     @PostMapping("/createTest")
-    public ResponseEntity<Test> createTest(HttpSession session) {
+    public ResponseEntity<String> createTest(HttpSession session, @RequestParam String name, @RequestParam String description) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(name!=null && description!=null) {
+                    return ResponseEntity.ok(api.createTest(name, description));
+                }
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -233,12 +244,18 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/changeTest")
-    public ResponseEntity<Test> changeTest(HttpSession session) {
+    public ResponseEntity<String> changeTest(HttpSession session, @RequestParam Integer id, @RequestParam String name, @RequestParam String description, @RequestParam Integer prev) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(name!=null && description!=null && id!=null) {
+                    if(prev!=null) {
+                        return ResponseEntity.ok(api.changeTest(id, name, description, prev));
+                    } else {
+                        return ResponseEntity.ok(api.changeTest(id, name, description));
+                    }
+                }
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -246,25 +263,37 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/deleteTest")
-    public ResponseEntity<Test> deleteTest(HttpSession session) {
+    public ResponseEntity<String> deleteTest(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
-            } else {
-                return ResponseEntity.badRequest().build();
+                if(id!=null)
+                    return ResponseEntity.ok(api.deleteTest(id));
             }
         }
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/getAllTests")
-    public ResponseEntity<List<Test>> getAllTests(HttpSession session) {
+    public ResponseEntity<List<Test>> getAllTests(HttpSession session) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
+                return ResponseEntity.ok(api.getAllTests());
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
+    @PostMapping("/createAnswer")
+    public ResponseEntity<TestAnswer> createAnswer(HttpSession session, @RequestParam Integer qid, @RequestParam String name) {
+        if(isAdmin(session)) {
+            User user = (User) session.getAttribute("user");
+            UserPointer pointer = (UserPointer) session.getAttribute("pointer");
+            if(pointer!=null&&pointer.getUserStateID()==1) {
+                if(qid!=null && name!=null)
+                    return ResponseEntity.ok(api.createAnswer(qid, name));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -272,26 +301,14 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/getAllAnswer")
-    public ResponseEntity<TestAnswer> getAllAnswer(HttpSession session) {
-        if(isAdmin(session)) {
-            User user = (User) session.getAttribute("user");
-            UserPointer pointer = (UserPointer) session.getAttribute("pointer");
-            if(pointer!=null&&pointer.getUserStateID()==1) {
-
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-        return ResponseEntity.badRequest().build();
-    }
     @PostMapping("/changeAnswer")
-    public ResponseEntity<TestAnswer> changeAnswer(HttpSession session) {
+    public ResponseEntity<TestAnswer> changeAnswer(HttpSession session, @RequestParam Integer qid, @RequestParam String name, @RequestParam Integer id) {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(qid!=null && id!=null && name!=null)
+                    return ResponseEntity.ok(api.changeAnswer(id, qid, name));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -299,12 +316,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/deleteAnswer")
-    public ResponseEntity<TestAnswer> deleteAnswer(HttpSession session) {
+    public ResponseEntity<String> deleteAnswer(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    ResponseEntity.ok(api.deleteAnswer(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -312,12 +330,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/getAllAnswers")
-    public ResponseEntity<List<TestAnswer>> getAllAnswers(HttpSession session) {
+    public ResponseEntity<List<TestAnswer>> getAllAnswers(HttpSession session, @RequestParam Integer qid) {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(qid!=null)
+                    return ResponseEntity.ok(api.getAllAnswers(qid));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -325,12 +344,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/createQuestion")
-    public ResponseEntity<TestQuestion> createQuestion(HttpSession session) {
+    public ResponseEntity<String> createQuestion(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.createQuestion(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -338,12 +358,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/changeQuestion")
-    public ResponseEntity<TestQuestion> changeQuestion(HttpSession session) {
+    public ResponseEntity<String> changeQuestion(HttpSession session, @RequestParam Integer id,  @RequestParam String name,  @RequestParam Integer testId,  @RequestParam Integer inOrder,  @RequestParam Integer perInstance) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null && name!=null && testId!=null && inOrder !=null && perInstance!=null)
+                    return ResponseEntity.ok(api.changeQuestion(id, name, testId, inOrder, perInstance));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -351,12 +372,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/deleteQuestion")
-    public ResponseEntity<TestQuestion> deleteQuestion(HttpSession session) {
+    public ResponseEntity<String> deleteQuestion(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.deleteQuestion(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -364,12 +386,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/getAllQuestions")
-    public ResponseEntity<List<TestQuestion>> getAllQuestions(HttpSession session) {
+    public ResponseEntity<String> getAllQuestions(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.getAllQuestions(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -377,12 +400,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/createReward")
-    public ResponseEntity<TestAnswerReward> createReward(HttpSession session) {
+    public ResponseEntity<String> createReward(HttpSession session, @RequestParam Integer id, @RequestParam Integer reward, @RequestParam Integer parameterId) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null && reward!=null && parameterId!=null)
+                    return ResponseEntity.ok(api.createReward(id, reward, parameterId));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -390,12 +414,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/changeReward")
-    public ResponseEntity<TestAnswerReward> changeReward(HttpSession session) {
+    public ResponseEntity<String> changeReward(HttpSession session, @RequestParam Integer id, @RequestParam Integer reward, @RequestParam Integer parameterId, @RequestParam Integer answerId) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.changeReward(id, reward, parameterId, answerId));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -403,12 +428,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/deleteReward")
-    public ResponseEntity<TestAnswerReward> deleteReward(HttpSession session) {
+    public ResponseEntity<String> deleteReward(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.deleteReward(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -416,12 +442,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/getAllRewards")
-    public ResponseEntity<List<TestAnswerReward>> getAllRewards(HttpSession session) {
+    public ResponseEntity<String> getAllRewards(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.getAllRewards(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -429,12 +456,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/createParameter")
-    public ResponseEntity<TestAnswerReward> createParameter(HttpSession session) {
+    public ResponseEntity<String> createParameter(HttpSession session, @RequestParam String name, @RequestParam Integer required, @RequestParam Integer prevRequired, @RequestParam Integer testId) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(name!=null && required!=null && prevRequired!=null && testId!=null)
+                    return ResponseEntity.ok(api.createParameter(name, required, prevRequired, testId));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -442,12 +470,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/changeParameter")
-    public ResponseEntity<TestAnswerReward> changeParameter(HttpSession session) {
+    public ResponseEntity<String> changeParameter(HttpSession session, @RequestParam Integer id, @RequestParam String name, @RequestParam Integer required, @RequestParam Integer prevRequired, @RequestParam Integer testId) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null && name!=null && required!=null && prevRequired!=null && testId!=null)
+                    return ResponseEntity.ok(api.changeParameter(id, name, required, prevRequired, testId));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -455,12 +484,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/deleteParameter")
-    public ResponseEntity<TestAnswerReward> deleteParameter(HttpSession session) {
+    public ResponseEntity<String> deleteParameter(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.deleteParameter(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -468,12 +498,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/getAllParameters")
-    public ResponseEntity<List<TestParameter>> getAllParameters(HttpSession session) {
+    public ResponseEntity<String> getAllParameters(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.getAllParameters(id));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -486,12 +517,13 @@ public class MyController {
 
 
     @PostMapping("/createCategory")
-    public ResponseEntity<Category> createCategory(HttpSession session) {
+    public ResponseEntity<String> createCategory(HttpSession session, @RequestParam String name) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok(api.createCategory(name));
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -499,12 +531,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/changeCategory")
-    public ResponseEntity<Category> changeCategory(HttpSession session) {
+    public ResponseEntity<String> changeCategory(HttpSession session, @RequestParam Integer id, @RequestParam String name) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok();
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -512,12 +545,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/deleteCategory")
-    public ResponseEntity<Category> deleteCategory(HttpSession session) {
+    public ResponseEntity<String> deleteCategory(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok();
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -525,12 +559,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/getAllCategories")
-    public ResponseEntity<List<Category>> getAllCategories(HttpSession session) {
+    public ResponseEntity<String> getAllCategories(HttpSession session) throws SQLException {
             User user = (User) session.getAttribute("user");
             if(user!=null) {
                 UserPointer pointer = (UserPointer) session.getAttribute("pointer");
                 if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                    if(id!=null)
+                        return ResponseEntity.ok();
                 } else {
                     return ResponseEntity.badRequest().build();
                 }
@@ -538,12 +573,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/createBook")
-    public ResponseEntity<Book> createBook(HttpSession session) {
+    public ResponseEntity<String> createBook(HttpSession session, @RequestParam Integer id, @RequestParam String name) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok();
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -551,12 +587,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/changeBook")
-    public ResponseEntity<Book> changeBook(HttpSession session) {
+    public ResponseEntity<String> changeBook(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok();
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -564,12 +601,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/deleteBook")
-    public ResponseEntity<Book> deleteBook(HttpSession session) {
+    public ResponseEntity<String> deleteBook(HttpSession session, @RequestParam Integer id) throws SQLException {
         if(isAdmin(session)) {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                if(id!=null)
+                    return ResponseEntity.ok();
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -577,12 +615,13 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/getAllBooks")
-    public ResponseEntity<List<Book>> getAllBooks(HttpSession session) {
+    public ResponseEntity<String> getAllBooks(HttpSession session, @RequestParam Integer id) throws SQLException {
             User user = (User) session.getAttribute("user");
             if(user!=null) {
                 UserPointer pointer = (UserPointer) session.getAttribute("pointer");
                 if (pointer != null && pointer.getUserStateID() == 1) {
-
+                    if(id!=null)
+                        return ResponseEntity.ok();
                 } else {
                     return ResponseEntity.badRequest().build();
                 }
@@ -597,7 +636,9 @@ public class MyController {
             User user = (User) session.getAttribute("user");
             UserPointer pointer = (UserPointer) session.getAttribute("pointer");
             if(pointer!=null&&pointer.getUserStateID()==1) {
-
+                //if()
+                //    return ResponseEntity.ok();
+                return ResponseEntity.ok(niy);
             } else {
                 return ResponseEntity.badRequest().build();
             }

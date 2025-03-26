@@ -14,7 +14,7 @@ public class TestUserService {
     @Autowired
     private TestUserRepository testUserRepository;
     // Create
-    public TestUser createTestUser(String name, int testId, int userId) {
+    public TestUser createTestUser(int testId, int userId) {
         TestUser testUser = new TestUser();
         testUser.setPassed(false);
         testUser.setTestID(testId);

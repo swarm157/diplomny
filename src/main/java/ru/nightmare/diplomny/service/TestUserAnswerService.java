@@ -32,6 +32,10 @@ public class TestUserAnswerService {
         return testUserAnswerRepository.findById(id).orElseThrow();
     }
 
+    public TestUserAnswer getTestUserAnswerByQuestionID(int tu_id, int id) {
+        return testUserAnswerRepository.findByTestQuestionIDAndTestUserID(id, tu_id);
+    }
+
     // Update
     public TestUserAnswer updateTestUserAnswer(int id, int value, Date date) {
         TestUserAnswer answer = testUserAnswerRepository.findById(id).orElseThrow();

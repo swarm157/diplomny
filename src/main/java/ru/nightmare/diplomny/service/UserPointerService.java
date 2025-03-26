@@ -28,10 +28,25 @@ public class UserPointerService {
     }
 
     // Update
+    public UserPointer updateUserPointer(int id, int userId, int stateId, int pointer) {
+        UserPointer up = userPointerRepository.findById(id).orElseThrow();
+        up.setUserID(userId);
+        up.setUserStateID(stateId);
+        up.setPointer(pointer);
+        return userPointerRepository.save(up);
+    }
     public UserPointer updateUserPointer(int id, int userId, int stateId) {
         UserPointer up = userPointerRepository.findById(id).orElseThrow();
         up.setUserID(userId);
         up.setUserStateID(stateId);
+        return userPointerRepository.save(up);
+    }
+    public UserPointer updateUserPointer(int id, int userId, int stateId, int pointer, int question) {
+        UserPointer up = userPointerRepository.findById(id).orElseThrow();
+        up.setUserID(userId);
+        up.setUserStateID(stateId);
+        up.setPointer(pointer);
+        up.setQuestion(question);
         return userPointerRepository.save(up);
     }
 

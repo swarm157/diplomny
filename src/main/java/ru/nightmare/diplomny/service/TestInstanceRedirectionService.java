@@ -2,9 +2,7 @@ package ru.nightmare.diplomny.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.nightmare.diplomny.entity.TestAnswer;
 import ru.nightmare.diplomny.entity.TestInstanceRedirection;
-import ru.nightmare.diplomny.repository.TestAnswerRepository;
 import ru.nightmare.diplomny.repository.TestInstanceRedirectionRepository;
 
 @Service
@@ -45,5 +43,9 @@ public class TestInstanceRedirectionService {
     // Delete
     public void deleteTestInstanceRedirection(int id) {
         testInstanceRedirectionRepository.deleteById(id);
+    }
+
+    public void deleteTestInstanceRedirectionByAnswer(int answerID) {
+        testInstanceRedirectionRepository.deleteTestInstanceRedirectionByTestAnswerID(answerID);
     }
 }

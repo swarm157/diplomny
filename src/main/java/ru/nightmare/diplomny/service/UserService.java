@@ -31,6 +31,9 @@ public class UserService {
         return userRepository.findById(id).orElseThrow();
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
     // Update
     public User updateUser(int id, Byte[] avatar) {
         User user = userRepository.findById(id).orElseThrow();
@@ -45,7 +48,7 @@ public class UserService {
     }
 
     // Delete
-    public void deleteTestAnswer(int id) {
+    public void deleteUser(int id) {
         userRepository.deleteById(id);
     }
 }

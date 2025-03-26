@@ -15,6 +15,7 @@ public class UserPointer {
     private Integer userStateID;
     private Integer userID;
     private Integer pointer;
+    private Integer question;
 }
 /*
 CREATE TABLE user_pointer (

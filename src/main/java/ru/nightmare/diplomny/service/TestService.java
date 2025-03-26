@@ -19,6 +19,13 @@ public class TestService {
         test.setPreviousId(prevId);
         return testRepository.save(test);
     }
+    // Create
+    public Test createTest(String name, String description) {
+        Test test = new Test();
+        test.setName(name);
+        test.setDescription(description);
+        return testRepository.save(test);
+    }
 
     // Read
     public Iterable<Test> getAllTests() {
@@ -35,6 +42,14 @@ public class TestService {
         test.setName(name);
         test.setDescription(description);
         test.setPreviousId(prevId);
+        return testRepository.save(test);
+    }
+
+    // Update
+    public Test updateTest(int id, String name, String description) {
+        Test test = testRepository.findById(id).orElseThrow();
+        test.setName(name);
+        test.setDescription(description);
         return testRepository.save(test);
     }
 

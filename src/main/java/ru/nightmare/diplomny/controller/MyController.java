@@ -627,25 +627,6 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
 
-
-    @PostMapping("/logs")
-    public ResponseEntity<String> logs(HttpSession session, @RequestParam String from, @RequestParam String until) {
-        if(isAdmin(session)) {
-            User user = (User) session.getAttribute("user");
-            UserPointer pointer = (UserPointer) session.getAttribute("pointer");
-            if(pointer!=null&&pointer.getUserStateID()==1) {
-                //if()
-                //    return ResponseEntity.ok();
-                return ResponseEntity.ok(niy);
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-
-
     private boolean isAdmin(HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user==null)

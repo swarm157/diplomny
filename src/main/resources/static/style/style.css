@@ -1,0 +1,65 @@
+
+
+:root {
+    --bs-primary: #ff5733; /* Change primary color */
+    --bs-secondary: #33c1ff; /* Change secondary color */
+    --bs-success: #28a745; /* Change success color */
+    --bs-danger: #dc3545; /* Change danger color */
+    --bs-warning: #ffc107; /* Change warning color */
+    --bs-info: #17a2b8; /* Change info color */
+    --bs-light: #f8f9fa; /* Change light color */
+    --bs-dark: #343a40; /* Change dark color */
+}
+
+/*
+header {
+    background: #ffab58;
+}
+
+body {
+    background: #ffdebb;
+}
+
+footer {
+    background: #ffab58;
+}
+ */
+
+header {
+    background: url("/images/hf.webp");
+    border-bottom: solid #20170f 1px;
+}
+
+body {
+    background: url("/images/back.jpg");
+    background-size: cover;
+}
+
+footer {
+    background: url("/images/hf.webp");
+    border-top: solid #2b1f14 1px;
+}
+
+h1, h2, h3, h4, h5, h6, p, a {
+    color: white;
+}
+
+.card {
+    background: #754b37;
+    border-radius: 7%;
+    border: 1px solid #3a2718;
+}
+
+.btn-primary {
+    background: #333333;
+    border-color: #333333;
+}
+
+.btn:hover {
+    background: #454545;
+    border-color: #454545;
+}
+
+.link-secondary, .list-inline-item, .me-4, .fw-bold, .mb-2, .text-primary, .list-inline {
+    color: white;
+}

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/styles.min.css">
     <link rel="stylesheet" href="/style/style.css">
-    <script src="/libs/jquery-3.7.1.slim.min.js"></script>
+    <script src="/libs/jquery-3.7.1.min.js"></script>
     <script src="/libs/ajax.min.js"></script>
     <script src="/libs/highcharts.js"></script>
     <script src="/scripts/app.js"></script>
@@ -44,7 +44,17 @@
                 <div><input type="text" id="mail"><label class="form-label">Почта</label></div>
                 <div><input type="password" id="pass"><label class="form-label">Пароль</label></div>
                 <div><input type="password" id="repeat"><label class="form-label">Повтор</label></div>
-                <div><button class="btn btn-primary" id="register" type="button" style="width: 100%;" onclick="register(mailL.innerHTML, passL.innerHTML, nameL.innerHTML, lastL.innerHTML, descL.innerHTML)">Отправить</button></div>
+                <div><button class="btn btn-primary" id="register" type="button" style="width: 100%;" onclick="register(
+                    document.getElementById('mail').value,
+                 document.getElementById('pass').value,
+                 document.getElementById('name').value,
+                 document.getElementById('last').value,
+                 document.getElementById('desc').value
+                 //passL.text(),
+                  //nameL.text(),
+                   //lastL.text(),
+                    //descL.text()
+                     )">Отправить</button></div>
             </div>
         </div>
     </div>

@@ -4,21 +4,16 @@ import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.nightmare.diplomny.entity.*;
 import ru.nightmare.diplomny.model.TestController;
+import ru.nightmare.diplomny.request.Register;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 
 @Slf4j
@@ -87,26 +82,39 @@ public class MyController {
         return ResponseEntity.badRequest().build();
     }
 
+
     @PostMapping("/register")
-    public ResponseEntity<User> register(HttpSession session, @RequestParam String email,
-                         @RequestParam String password, @RequestParam String name,
-                         @RequestParam String lastName, @RequestParam String description) {
+    public ResponseEntity<User> register(HttpSession session, @RequestBody Register register) {
+    //public ResponseEntity<User> register(HttpSession session, @RequestBody String email,
+    //                     @RequestBody String password, @RequestBody String name,
+    //                     @RequestBody String lastName, @RequestBody String description) {
         User user = null;
         try {
-            user = gson.fromJson(api.registerUser(name, lastName, email, description, password), User.class);
+            log.info("sending to register Register");
+            user = gson.fromJson(api.registerUser(register.getName(), register.getLastName(), register.getEmail(), register.getDescription(), register.getPassword()), User.class);
+            log.info("registered user done");
+            log.info("setting attribute");
             session.setAttribute("user", user);
+            log.info("session attribute has been set");
             if(user!=null) {
+                log.info("user exists");
+                log.info("checking attribute pointer");
                 UserPointer pointer = api.getPointer(user);
                 if (pointer != null) {
+                    log.info("setting attribute pointer cuz not equals null");
                     session.setAttribute("pointer", pointer);
                 }
+                log.info("setting attribute user");
                 session.setAttribute("user", user);
             } else {
+                log.info("can't process user");
                 return ResponseEntity.badRequest().build();
             }
         } catch (SQLException | NoSuchAlgorithmException e) {
+            log.error("can't process register", e);
             throw new RuntimeException(e);
         }
+        log.info("registered user done");
         return ResponseEntity.ok(user);
     }
 

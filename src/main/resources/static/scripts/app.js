@@ -59,15 +59,36 @@ function nextQuestion(answer) {
 }
 
 function register(email, password, name, lastName, description) {
+    /*$.post(
+        "/api/register",
+        {
+            email: email,
+            password: password,
+            name: name,
+            lastName: lastName,
+            description: description
+        },
+        function (data, status) {
+            console.log("Data: " + data + "\nStatus: " + status);
+        }
+    );*/
+    console.log("parameters:  email "+email+"  password "+password+"  name "+name+ "  lastName "+lastName+"  description "+description)
     $.ajax({
-        type: 'POST',
-        url: `${address}/register`,
-        data: { email: email, password: password, name: name, lastName: lastName, description: description },
-        success: function(response) {
-            console.log('User registered:', response);
+        url: "/api/register",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            email: email,
+            password: password,
+            name: name,
+            lastName: lastName,
+            description: description
+        }),
+        success: function(data, status) {
+            console.log("Data: " + data + "\nStatus: " + status);
         },
         error: function(xhr, status, error) {
-            console.error('Error registering user:', error);
+            console.error("Error: " + xhr.responseText);
         }
     });
 }
@@ -611,6 +632,7 @@ function getAllBooks(id) {
 
 function main() {
     mailL = $("#mail");
+    console.log(mailL);
     nameL = $("#name");
     lastL = $("#last");
     descL = $("#desc");
@@ -621,24 +643,25 @@ function main() {
     t1L = $("#t1");
     t2L = $("#t2");
 
-    // Проверяем, если поле повторного ввода пустое
-    if (repeatL === "") {
-        message.textContent = ""; // Очищаем сообщение, если поле пустое
-        return;
-    }
 
-    if (passL === repeatL) {
+
+    /*if (passL === repeatL) {
         message.textContent = "Пароли совпадают!";
         message.style.color = "green";
     } else {
         message.textContent = "Пароли не совпадают.";
         message.style.color = "red";
     }
-}
 
-// Добавляем обработчики событий для обоих полей
-passL.addEventListener('input', checkPasswords);
-repeatL.addEventListener('input', checkPasswords);
+    // Проверяем, если поле повторного ввода пустое
+    if (repeatL === "") {
+        message.textContent = ""; // Очищаем сообщение, если поле пустое
+        return;
+    }*/
+
+    // Добавляем обработчики событий для обоих полей
+    passL.addEventListener('input', checkPasswords);
+    repeatL.addEventListener('input', checkPasswords);
 }
 
 window.onload=main;

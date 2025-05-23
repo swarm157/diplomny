@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Table("_user")
+@Table("_USER")
 public class User {
     @Id
     private Integer userID;

@@ -315,8 +315,11 @@ public class TestController {
         return gson.toJson(testQuestionService.getNextTestQuestion(getPointer(userService.getUser(user.getUserID())).getQuestion()));
     }
     public String registerUser(String name, String lastName, String email, String description, String password) throws SQLException, NoSuchElementException, NoSuchAlgorithmException {
+        log.info("register user: name={}, lastName={}, email={}, description={}, password={}", name, lastName, email, description, password);
         User user = userService.createUser(name, lastName, email, description, hashPassword(password));
+        log.info("done registration");
         generateTestUsersFor(user.getUserID());
+        log.info("done generating test users");
         return gson.toJson(user);
     }
     public String updateDescription(User user, String description) throws SQLException, NoSuchElementException {

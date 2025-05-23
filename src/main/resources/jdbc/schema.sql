@@ -1,5 +1,5 @@
 CREATE TABLE _user (
-    user_id int not null,
+    user_id int not null auto_increment,
     name varchar(255) not null,
     last_name varchar(255) not null,
     registration date,
@@ -24,7 +24,7 @@ INSERT INTO _user(user_id, name, last_name, registration, admin, email, password
 );*/
 
 CREATE TABLE test (
-    test_id int NOT NULL,
+    test_id int NOT NULL auto_increment,
     name varchar(255) NOT NULL,
     description text(5000) NOT NULL,
     previous_id int,
@@ -33,7 +33,7 @@ CREATE TABLE test (
 );
 
 CREATE TABLE test_question (
-    test_question_id int not null,
+    test_question_id int not null auto_increment,
     number_in_order int not null,
     test_id int not null,
     question varchar(255) not null,
@@ -44,7 +44,7 @@ CREATE TABLE test_question (
 );
 
 CREATE TABLE test_answer (
-    test_answer_id int not null,
+    test_answer_id int not null auto_increment,
     test_question_id int not null,
     answer varchar(255) not null,
     CONSTRAINT test_answer_pk PRIMARY KEY (test_answer_id),
@@ -52,7 +52,7 @@ CREATE TABLE test_answer (
 );
 
 CREATE TABLE test_parameter (
-                                test_parameter_id int not null,
+                                test_parameter_id int not null auto_increment,
                                 test_id int not null,
                                 name varchar(255) not null,
                                 required int not null,
@@ -62,7 +62,7 @@ CREATE TABLE test_parameter (
 );
 
 CREATE TABLE test_answer_reward (
-    test_answer_reward_id int not null,
+    test_answer_reward_id int not null auto_increment,
     test_answer_id int not null,
     parameter_id int not null,
     reward int not null,
@@ -72,7 +72,7 @@ CREATE TABLE test_answer_reward (
 );
 
 CREATE TABLE test_user (
-    test_user_id int not null,
+    test_user_id int not null auto_increment,
     user_id int not null,
     test_id int not null,
     passed bit,
@@ -82,7 +82,7 @@ CREATE TABLE test_user (
 );
 
 CREATE TABLE test_result (
-    test_result_id int not null,
+    test_result_id int not null auto_increment,
     test_parameter_id int not null,
     test_user_id int not null,
     summary int not null,
@@ -92,7 +92,7 @@ CREATE TABLE test_result (
 );
 
 CREATE TABLE test_user_answer(
-    test_user_answer_id int not null,
+    test_user_answer_id int not null auto_increment,
     test_user_id int not null,
     test_question_id int not null,
     taken date,
@@ -104,7 +104,7 @@ CREATE TABLE test_user_answer(
 );
 
 CREATE TABLE test_instance_redirection (
-    test_instance_redirection_id int NOT NULL,
+    test_instance_redirection_id int NOT NULL auto_increment,
     test_question_id int NOT NULL,
     test_user_id int NOT NULL,
     test_answer_id int NOT NULL,
@@ -116,13 +116,13 @@ CREATE TABLE test_instance_redirection (
 );
 
 CREATE table user_state (
-    user_state_id int NOT NULL,
+    user_state_id int NOT NULL auto_increment,
     state varchar(8) NOT NULL,
     CONSTRAINT user_state_pk PRIMARY KEY (user_state_id)
 );
 
 CREATE TABLE user_pointer (
-    user_pointer_id int NOT NULL,
+    user_pointer_id int NOT NULL auto_increment,
     user_state_id int NOT NULL,
     user_id int NOT NULL,
     pointer int NOT NULL,
@@ -136,13 +136,13 @@ INSERT INTO user_state(user_state_id, state) VALUES (1, 'nothing');
 INSERT INTO user_state(user_state_id, state) VALUES (2, 'testing');
 
 CREATE TABLE category (
-    category_id int NOT NULL,
+    category_id int NOT NULL auto_increment,
     name varchar(40) NOT NULL,
     CONSTRAINT category_pk PRIMARY KEY (category_id)
 );
 
 CREATE TABLE book (
-    book_id int NOT NULL,
+    book_id int NOT NULL auto_increment,
     file varchar(255) NOT NULL,
     preview blob NOT NULL,
     name varchar(40) NOT NULL,
